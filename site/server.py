@@ -16,6 +16,7 @@ import socket
 import subprocess
 import uuid
 import hmac
+import stat
 import threading
 import urllib.request
 import urllib.error
@@ -45,44 +46,39 @@ else:
     class ServerClass(socketserver.ThreadingMixIn, http.server.HTTPServer):
         daemon_threads = True
 
-DEFAULT_OPERATOR_TOKEN = "inneros-liveops-operator-2026-auth"
-
 def get_operator_token():
-    env_tok = os.environ.get("LIVEOPS_OPERATOR_TOKEN")
-    if env_tok and env_tok.strip():
-        return env_tok.strip()
+    """Read an existing private credential; never supply a built-in fallback."""
+    env_tok = os.environ.get("LIVEOPS_OPERATOR_TOKEN", "").strip()
+    if env_tok:
+        return env_tok
     token_file = os.path.join(BASE_DIR, ".operator_token")
-    if os.path.isfile(token_file):
-        try:
-            with open(token_file, "r", encoding="utf-8") as f:
-                tok = f.read().strip()
-                if tok:
-                    return tok
-        except Exception:
-            pass
-    return DEFAULT_OPERATOR_TOKEN
+    # A file credential is supported only where owner/mode checks are available.
+    if os.name != "posix":
+        return None
+    try:
+        fd = os.open(token_file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, "r", encoding="utf-8") as f:
+            info = os.fstat(f.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
+                return None
+            return f.read(4096).strip() or None
+    except (OSError, UnicodeError):
+        return None
+
 
 def is_authorized_operator(headers, query_params):
+    # Query parameters are deliberately ignored: credentials must never be URLs.
     expected = get_operator_token()
-    
-    # 1. Authorization: Bearer <token>
+    if not expected:
+        return False
     auth_h = headers.get("Authorization", "").strip()
     if auth_h.lower().startswith("bearer "):
         tok = auth_h[7:].strip()
-        if hmac.compare_digest(tok, expected):
+        if tok and hmac.compare_digest(tok.encode("utf-8"), expected.encode("utf-8")):
             return True
-
-    # 2. X-Operator-Token: <token>
     op_h = headers.get("X-Operator-Token", "").strip()
-    if op_h and hmac.compare_digest(op_h, expected):
-        return True
+    return bool(op_h and hmac.compare_digest(op_h.encode("utf-8"), expected.encode("utf-8")))
 
-    # 3. Query param: ?token=<token>
-    token_param = query_params.get("token", [None])[0]
-    if token_param and hmac.compare_digest(token_param.strip(), expected):
-        return True
-
-    return False
 
 def check_tcp(host, port, timeout=0.8):
     t0 = time.perf_counter()
