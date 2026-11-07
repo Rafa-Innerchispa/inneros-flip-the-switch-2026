@@ -18,7 +18,7 @@ def run_gate() -> dict:
     env["PYTHONPATH"] = str(ROOT / "src")
     stages = {}
     for label, command in (
-        ("unit_tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"]),
+        ("unit_tests", [sys.executable, "scripts/run_offline_tests.py"]),
         ("secret_pattern_check", [sys.executable, "scripts/preflight.py"]),
     ):
         result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
