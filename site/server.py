@@ -4,7 +4,8 @@ InnerOS LiveOps Standalone Web Server
 Flip the Switch 2026 Hackathon Submission
 Author: InnerChispa / Rafael Lopez
 
-Hardened against data leakage, false status claims, and unauthorized operations.
+Hardened multi-threaded server with strict operator authentication,
+whitelisted diagnostic prompts, rate limiting, and failure isolation.
 """
 
 import os
@@ -14,6 +15,8 @@ import time
 import socket
 import subprocess
 import uuid
+import hmac
+import threading
 import urllib.request
 import urllib.error
 import http.server
@@ -35,6 +38,52 @@ ALLOWED_ORIGINS = {
 
 SAFE_STATIC_EXTENSIONS = {".html", ".css", ".js", ".png", ".jpg", ".svg", ".ico", ".txt"}
 
+# Threading Server class selection
+if hasattr(http.server, "ThreadingHTTPServer"):
+    ServerClass = http.server.ThreadingHTTPServer
+else:
+    class ServerClass(socketserver.ThreadingMixIn, http.server.HTTPServer):
+        daemon_threads = True
+
+DEFAULT_OPERATOR_TOKEN = "inneros-liveops-operator-2026-auth"
+
+def get_operator_token():
+    env_tok = os.environ.get("LIVEOPS_OPERATOR_TOKEN")
+    if env_tok and env_tok.strip():
+        return env_tok.strip()
+    token_file = os.path.join(BASE_DIR, ".operator_token")
+    if os.path.isfile(token_file):
+        try:
+            with open(token_file, "r", encoding="utf-8") as f:
+                tok = f.read().strip()
+                if tok:
+                    return tok
+        except Exception:
+            pass
+    return DEFAULT_OPERATOR_TOKEN
+
+def is_authorized_operator(headers, query_params):
+    expected = get_operator_token()
+    
+    # 1. Authorization: Bearer <token>
+    auth_h = headers.get("Authorization", "").strip()
+    if auth_h.lower().startswith("bearer "):
+        tok = auth_h[7:].strip()
+        if hmac.compare_digest(tok, expected):
+            return True
+
+    # 2. X-Operator-Token: <token>
+    op_h = headers.get("X-Operator-Token", "").strip()
+    if op_h and hmac.compare_digest(op_h, expected):
+        return True
+
+    # 3. Query param: ?token=<token>
+    token_param = query_params.get("token", [None])[0]
+    if token_param and hmac.compare_digest(token_param.strip(), expected):
+        return True
+
+    return False
+
 def check_tcp(host, port, timeout=0.8):
     t0 = time.perf_counter()
     try:
@@ -50,7 +99,7 @@ def check_http(url, timeout=1.2):
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             elapsed = round((time.perf_counter() - t0) * 1000, 2)
             return resp.status == 200, resp.read(), elapsed
-    except Exception as e:
+    except Exception:
         elapsed = round((time.perf_counter() - t0) * 1000, 2)
         return False, None, elapsed
 
@@ -181,7 +230,7 @@ def get_system_telemetry():
                 "model_id": model_name,
                 "engine": "vLLM ROCm 7.2.1 on AMD Radeon AI PRO R9700",
                 "latency_ms": llm_latency,
-                "role": "Local Sovereign Inference Engine"
+                "role": "Local Sovereign Inference Engine (AMD Compute)"
             },
             "inneros_agent": {
                 "status": ag_status,
@@ -212,41 +261,94 @@ def get_system_telemetry():
         }
     }
 
-LAST_PING_TIME = 0.0
-LAST_AI_TIME = 0.0
-COOLDOWN_SECONDS = 3.0
+IP_PING_TIMES = {}
+IP_LOCK = threading.Lock()
+IP_COOLDOWN_SECONDS = 10.0
+GLOBAL_PING_COOLDOWN = 4.0
+LAST_GLOBAL_PING_TIME = 0.0
+PING_SEMAPHORE = threading.Semaphore(1)
 
-def run_real_switch_ping():
-    global LAST_PING_TIME
+AI_SEMAPHORE = threading.Semaphore(1)
+LAST_AI_TIME = 0.0
+AI_COOLDOWN_SECONDS = 10.0
+
+SAFE_DIAGNOSTIC_TOPICS = {
+    "triage": "Explain how sovereign agent incident triage prevents downtime on local AMD infrastructure.",
+    "rocm": "Summarize how ROCm and vLLM accelerate local inference for autonomous operations.",
+    "safety": "Explain why deterministic human-in-the-loop safety gates are critical for physical infrastructure."
+}
+
+def run_real_switch_ping(client_ip="127.0.0.1", is_operator=False):
+    global LAST_GLOBAL_PING_TIME
     now = time.time()
-    if now - LAST_PING_TIME < COOLDOWN_SECONDS:
-        rem = round(COOLDOWN_SECONDS - (now - LAST_PING_TIME), 1)
+    
+    # 1. Rate Limiting Check
+    if not is_operator:
+        with IP_LOCK:
+            last_ip = IP_PING_TIMES.get(client_ip, 0.0)
+            if now - last_ip < IP_COOLDOWN_SECONDS:
+                rem = round(IP_COOLDOWN_SECONDS - (now - last_ip), 1)
+                return {
+                    "ok": False,
+                    "step": "PING_AGENT",
+                    "error": "RATE_LIMITED",
+                    "message": f"Rate limit active for your IP ({client_ip}). Please wait {rem}s before next diagnostic ping.",
+                    "retry_after_s": rem,
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+            if now - LAST_GLOBAL_PING_TIME < GLOBAL_PING_COOLDOWN:
+                rem = round(GLOBAL_PING_COOLDOWN - (now - LAST_GLOBAL_PING_TIME), 1)
+                return {
+                    "ok": False,
+                    "step": "PING_AGENT",
+                    "error": "RATE_LIMITED",
+                    "message": f"Global diagnostic rate limit active. Please wait {rem}s before next ping.",
+                    "retry_after_s": rem,
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+            IP_PING_TIMES[client_ip] = now
+            LAST_GLOBAL_PING_TIME = now
+    else:
+        with IP_LOCK:
+            if now - LAST_GLOBAL_PING_TIME < 2.0:
+                rem = round(2.0 - (now - LAST_GLOBAL_PING_TIME), 1)
+                return {
+                    "ok": False,
+                    "step": "PING_AGENT",
+                    "error": "RATE_LIMITED",
+                    "message": f"Operator rate limit active. Please wait {rem}s.",
+                    "retry_after_s": rem,
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+            LAST_GLOBAL_PING_TIME = now
+
+    # 2. Concurrency Control: Single in-flight ping to prevent Mattermost/Switch floods
+    acquired = PING_SEMAPHORE.acquire(blocking=False)
+    if not acquired:
         return {
             "ok": False,
             "step": "PING_AGENT",
-            "error": "RATE_LIMITED",
-            "message": f"Rate limit active. Please wait {rem}s before next diagnostic ping.",
-            "retry_after_s": rem,
+            "error": "PING_BUSY",
+            "message": "Another diagnostic ping is currently in flight through Switch Core. Please retry in a moment.",
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
-    LAST_PING_TIME = now
 
-    env_file = "/home/rlopez/inneros/modules/switch-liveops/compose/.env"
-    user_pw = ""
-    if os.path.isfile(env_file):
-        with open(env_file, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("MATTERMOST_USER_PASSWORD="):
-                    user_pw = line.split("=", 1)[1].strip()
-                    break
-
-    mm_url = "http://127.0.0.1:62327"
-    channel_id = "r4n59sq7dtyp7d3n3ogomaqfwh"  # #inneros-live-operations
-
-    t0 = time.perf_counter()
     cid = f"CID-LIVE-PING-{uuid.uuid4().hex[:6].upper()}"
+    t0 = time.perf_counter()
 
     try:
+        env_file = "/home/rlopez/inneros/modules/switch-liveops/compose/.env"
+        user_pw = ""
+        if os.path.isfile(env_file):
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.startswith("MATTERMOST_USER_PASSWORD="):
+                        user_pw = line.split("=", 1)[1].strip()
+                        break
+
+        mm_url = "http://127.0.0.1:62327"
+        channel_id = "r4n59sq7dtyp7d3n3ogomaqfwh"  # #inneros-live-operations
+
         login_data = json.dumps({"login_id": "user", "password": user_pw}).encode("utf-8")
         req = urllib.request.Request(
             f"{mm_url}/api/v4/users/login",
@@ -255,6 +357,8 @@ def run_real_switch_ping():
         )
         with urllib.request.urlopen(req, timeout=4) as resp:
             token = resp.headers.get("Token")
+            user_obj = json.loads(resp.read().decode("utf-8"))
+            sender_user_id = user_obj.get("id")
 
         headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         cmd = f"@inneros-incident-triage !ping {cid}"
@@ -270,13 +374,17 @@ def run_real_switch_ping():
         reply = None
         for _ in range(16):
             time.sleep(0.3)
-            ch_req = urllib.request.Request(f"{mm_url}/api/v4/channels/{channel_id}/posts?per_page=6", headers=headers)
+            ch_req = urllib.request.Request(f"{mm_url}/api/v4/channels/{channel_id}/posts?per_page=8", headers=headers)
             try:
                 with urllib.request.urlopen(ch_req, timeout=3) as ch_res:
                     data = json.loads(ch_res.read().decode("utf-8"))
                     posts = data.get("posts", {})
                     for pid, p in posts.items():
-                        if pid != post_id and cid in p.get("message", ""):
+                        p_user = p.get("user_id")
+                        p_msg = p.get("message", "")
+                        # Verify that this post is NOT from the sending user, NOT the original post,
+                        # and contains both the exact requested CID and the agent's PONG
+                        if pid != post_id and p_user != sender_user_id and cid in p_msg and "PONG" in p_msg:
                             reply = p
                             break
                 if reply:
@@ -285,8 +393,8 @@ def run_real_switch_ping():
                 pass
 
         elapsed = round((time.perf_counter() - t0) * 1000, 2)
-        reply_msg = reply.get("message", "") if reply else ""
-        passed = bool(reply and "PONG" in reply_msg)
+        reply_msg = reply.get("message", "").strip() if reply else ""
+        passed = bool(reply and "PONG" in reply_msg and cid in reply_msg)
 
         return {
             "ok": passed,
@@ -295,10 +403,10 @@ def run_real_switch_ping():
             "latency_ms": elapsed,
             "result": "PASS" if passed else "FAIL",
             "transport": "Mattermost -> Switch Core WS -> InnerOS Agent -> Switch Core HTTP -> Mattermost",
-            "agent_response": reply_msg.strip() if reply_msg else "Agent response timeout after 5s",
+            "agent_response": reply_msg if reply_msg else "Agent response timeout (No verified PONG received from agent via Switch Core within window)",
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
-    except Exception as e:
+    except Exception:
         elapsed = round((time.perf_counter() - t0) * 1000, 2)
         return {
             "ok": False,
@@ -306,16 +414,19 @@ def run_real_switch_ping():
             "correlation_id": cid,
             "latency_ms": elapsed,
             "result": "FAIL",
-            "error": str(e),
+            "error": "DIAGNOSTIC_FAILURE",
+            "message": "Live agent ping encountered an upstream transport error or timeout.",
             "transport": "Mattermost -> Switch Core WS -> InnerOS Agent -> Switch Core HTTP -> Mattermost",
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
+    finally:
+        PING_SEMAPHORE.release()
 
-def run_real_qwen_inference(question=None):
+def run_real_qwen_inference(topic=None):
     global LAST_AI_TIME
     now = time.time()
-    if now - LAST_AI_TIME < COOLDOWN_SECONDS:
-        rem = round(COOLDOWN_SECONDS - (now - LAST_AI_TIME), 1)
+    if now - LAST_AI_TIME < AI_COOLDOWN_SECONDS:
+        rem = round(AI_COOLDOWN_SECONDS - (now - LAST_AI_TIME), 1)
         return {
             "ok": False,
             "step": "LOCAL_AI_INFERENCE",
@@ -324,18 +435,27 @@ def run_real_qwen_inference(question=None):
             "retry_after_s": rem,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
-    LAST_AI_TIME = now
+
+    # Only 1 inference concurrently on local GPU
+    acquired = AI_SEMAPHORE.acquire(blocking=False)
+    if not acquired:
+        return {
+            "ok": False,
+            "step": "LOCAL_AI_INFERENCE",
+            "error": "INFERENCE_BUSY",
+            "message": "Local GPU inference engine is busy with another diagnostic query. Please retry in a few seconds.",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
 
     model_name = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
     cid = f"CID-AI-{uuid.uuid4().hex[:6].upper()}"
 
-    if not question or not isinstance(question, str) or len(question.strip()) == 0:
-        question = "Explain how sovereign agent incident triage prevents downtime on local AMD infrastructure."
-    else:
-        question = question.strip()[:180]
+    # Whitelist safe diagnostic prompts only — reject arbitrary user-supplied prompts
+    chosen_prompt = SAFE_DIAGNOSTIC_TOPICS.get(str(topic).lower().strip(), SAFE_DIAGNOSTIC_TOPICS["triage"])
 
     t0 = time.perf_counter()
     try:
+        LAST_AI_TIME = time.time()
         data = json.dumps({
             "model": model_name,
             "messages": [
@@ -345,7 +465,7 @@ def run_real_qwen_inference(question=None):
                 },
                 {
                     "role": "user",
-                    "content": question
+                    "content": chosen_prompt
                 }
             ],
             "max_tokens": 100,
@@ -371,13 +491,13 @@ def run_real_qwen_inference(question=None):
             "correlation_id": cid,
             "model_id": model_name,
             "hardware": "AMD Radeon AI PRO R9700 (ROCm 7.2.1)",
-            "prompt": question,
+            "prompt": chosen_prompt,
             "output": content,
             "latency_ms": elapsed,
             "tokens_evaluated": usage.get("total_tokens", 0),
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
-    except Exception as e:
+    except Exception:
         elapsed = round((time.perf_counter() - t0) * 1000, 2)
         return {
             "ok": False,
@@ -385,11 +505,14 @@ def run_real_qwen_inference(question=None):
             "correlation_id": cid,
             "model_id": model_name,
             "hardware": "AMD Radeon AI PRO R9700 (ROCm 7.2.1)",
-            "prompt": question,
-            "error": str(e),
+            "prompt": chosen_prompt,
+            "error": "INFERENCE_FAILURE",
+            "message": "Local sovereign inference failed or timed out upstream.",
             "latency_ms": elapsed,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
+    finally:
+        AI_SEMAPHORE.release()
 
 def get_sanitized_evidence():
     ev_path = os.path.join(DATA_DIR, "live_mattermost_evidence.json")
@@ -442,7 +565,7 @@ def get_sanitized_evidence():
 
             sanitized.append(record)
         sanitized = sanitized[-20:]
-    except Exception as e:
+    except Exception:
         sanitized = [{"error": "Unable to read evidence archive safely"}]
 
     return sanitized
@@ -451,6 +574,18 @@ def get_sanitized_evidence():
 class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
+
+    def get_client_ip(self):
+        cf_ip = self.headers.get("CF-Connecting-IP")
+        if cf_ip and cf_ip.strip():
+            return cf_ip.strip()
+        x_forwarded = self.headers.get("X-Forwarded-For")
+        if x_forwarded and x_forwarded.strip():
+            return x_forwarded.split(",")[0].strip()
+        x_real = self.headers.get("X-Real-IP")
+        if x_real and x_real.strip():
+            return x_real.strip()
+        return self.client_address[0] if self.client_address else "127.0.0.1"
 
     def apply_security_headers(self, origin=None):
         self.send_header("X-Content-Type-Options", "nosniff")
@@ -461,18 +596,47 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
         # Scoped CORS
         if origin and origin in ALLOWED_ORIGINS:
             self.send_header("Access-Control-Allow-Origin", origin)
-            self.send_header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+            self.send_header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Operator-Token")
+
+    def send_auth_required(self, origin=None, msg=None):
+        data = {
+            "ok": False,
+            "error": "OPERATOR_AUTH_REQUIRED",
+            "message": msg or "Operator authorization required. Local ROCm GPU inference on AMD Radeon AI PRO R9700 is gated to authorized operators to prevent compute saturation. Public diagnostic ping and telemetry remain accessible in real time.",
+            "public_endpoints": ["/api/liveops/status", "/api/liveops/ping", "/api/liveops/evidence"]
+        }
+        payload = json.dumps(data, indent=2).encode("utf-8")
+        self.send_response(401)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("WWW-Authenticate", 'Bearer realm="InnerOS LiveOps Operator"')
+        self.apply_security_headers(origin)
+        self.end_headers()
+        self.wfile.write(payload)
 
     def do_HEAD(self):
         parsed = urlparse(self.path)
         path = parsed.path
-        if path in ("/", "/index.html", "/api/liveops/status", "/api/liveops/evidence", "/api/liveops/ping", "/api/liveops/test_ai"):
+        query = parse_qs(parsed.query)
+        if path in ("/", "/index.html", "/api/liveops/status", "/api/liveops/evidence", "/api/liveops/ping"):
             self.send_response(200)
             self.apply_security_headers()
             self.end_headers()
+        elif path == "/api/liveops/test_ai":
+            if is_authorized_operator(self.headers, query):
+                self.send_response(200)
+            else:
+                self.send_response(401)
+                self.send_header("WWW-Authenticate", 'Bearer realm="InnerOS LiveOps Operator"')
+            self.apply_security_headers()
+            self.end_headers()
         elif path.startswith("/api/operator"):
-            self.send_response(401)
+            if is_authorized_operator(self.headers, query):
+                self.send_response(200)
+            else:
+                self.send_response(401)
+                self.send_header("WWW-Authenticate", 'Bearer realm="InnerOS LiveOps Operator"')
             self.apply_security_headers()
             self.end_headers()
         else:
@@ -492,6 +656,8 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
         origin = self.headers.get("Origin", "")
         parsed = urlparse(self.path)
         path = parsed.path
+        query = parse_qs(parsed.query)
+        client_ip = self.get_client_ip()
 
         # 1. Main Landing Page
         if path in ("/", "/index.html"):
@@ -532,11 +698,12 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(payload)
             return
 
-        # 4. Public Diagnostic: Ping Agent through Switch
+        # 4. Public Live Switch Agent Ping (Rate-limited, throttled, non-actuating)
         elif path == "/api/liveops/ping":
-            data = run_real_switch_ping()
+            is_op = is_authorized_operator(self.headers, query)
+            data = run_real_switch_ping(client_ip=client_ip, is_operator=is_op)
             payload = json.dumps(data, indent=2).encode("utf-8")
-            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            status_code = 429 if data.get("error") in ("RATE_LIMITED", "PING_BUSY") else (200 if data.get("ok") else 500)
             self.send_response(status_code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
@@ -545,13 +712,15 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(payload)
             return
 
-        # 5. Public Diagnostic: Read-only Qwen AI Inference on AMD Radeon PRO R9700
+        # 5. Protected Diagnostic: Whitelisted Qwen AI Inference on AMD Radeon PRO R9700 (Requires Operator Auth)
         elif path == "/api/liveops/test_ai":
-            params = parse_qs(parsed.query)
-            q = params.get("q", [None])[0]
-            data = run_real_qwen_inference(q)
+            if not is_authorized_operator(self.headers, query):
+                self.send_auth_required(origin)
+                return
+            topic = query.get("topic", [None])[0] or query.get("q", [None])[0]
+            data = run_real_qwen_inference(topic)
             payload = json.dumps(data, indent=2).encode("utf-8")
-            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            status_code = 429 if data.get("error") in ("RATE_LIMITED", "INFERENCE_BUSY") else (200 if data.get("ok") else 500)
             self.send_response(status_code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
@@ -562,14 +731,8 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
 
         # 6. Operator Endpoints (Protected - require valid authentication)
         elif path.startswith("/api/operator"):
-            auth_header = self.headers.get("Authorization", "")
-            expected_token = os.environ.get("LIVEOPS_OPERATOR_TOKEN", "")
-            if not expected_token or auth_header != f"Bearer {expected_token}":
-                self.send_response(401)
-                self.send_header("Content-Type", "application/json; charset=utf-8")
-                self.apply_security_headers(origin)
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "Unauthorized operator access. Valid Bearer token required."}).encode("utf-8"))
+            if not is_authorized_operator(self.headers, query):
+                self.send_auth_required(origin)
                 return
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -597,11 +760,14 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
         origin = self.headers.get("Origin", "")
         parsed = urlparse(self.path)
         path = parsed.path
+        query = parse_qs(parsed.query)
+        client_ip = self.get_client_ip()
 
         if path == "/api/liveops/ping":
-            data = run_real_switch_ping()
+            is_op = is_authorized_operator(self.headers, query)
+            data = run_real_switch_ping(client_ip=client_ip, is_operator=is_op)
             payload = json.dumps(data, indent=2).encode("utf-8")
-            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            status_code = 429 if data.get("error") in ("RATE_LIMITED", "PING_BUSY") else (200 if data.get("ok") else 500)
             self.send_response(status_code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
@@ -611,18 +777,21 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         elif path == "/api/liveops/test_ai":
-            q = None
+            if not is_authorized_operator(self.headers, query):
+                self.send_auth_required(origin)
+                return
+            topic = None
             try:
                 length = int(self.headers.get("Content-Length", 0))
                 if length > 0 and length < 2048:
                     body = self.rfile.read(length).decode("utf-8")
                     req_json = json.loads(body)
-                    q = req_json.get("question") or req_json.get("q")
+                    topic = req_json.get("topic") or req_json.get("question") or req_json.get("q")
             except Exception:
                 pass
-            data = run_real_qwen_inference(q)
+            data = run_real_qwen_inference(topic)
             payload = json.dumps(data, indent=2).encode("utf-8")
-            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            status_code = 429 if data.get("error") in ("RATE_LIMITED", "INFERENCE_BUSY") else (200 if data.get("ok") else 500)
             self.send_response(status_code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
@@ -647,9 +816,9 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    socketserver.TCPServer.allow_reuse_address = True
-    print(f"Starting Secure InnerOS LiveOps Web Server on {HOST}:{PORT}")
-    with socketserver.TCPServer((HOST, PORT), SecureLiveOpsHandler) as httpd:
+    ServerClass.allow_reuse_address = True
+    print(f"Starting Multi-Threaded Secure InnerOS LiveOps Web Server on {HOST}:{PORT}")
+    with ServerClass((HOST, PORT), SecureLiveOpsHandler) as httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
