@@ -49,6 +49,18 @@ footer{border-top:1px solid #26435b;padding:32px 0;color:#a9c0d1;font-size:13px}
 </article>
 </div>
 </section>
+<section class="section" id="verify">
+<p class="eyebrow">INDEPENDENT VERIFICATION</p>
+<h2>How to verify InnerOS LiveOps</h2>
+<p class="sub">This page is publicly accessible and read-only. It does not impersonate a real operator or run commands on infrastructure.</p>
+<div class="architecture">
+<div class="arch"><strong>01 · Inspect live status</strong><small>Review Switch, Mattermost and Qwen service checks. A reachable port alone is not proof of an agent response.</small></div>
+<div class="arch"><strong>02 · Review recorded events</strong><small>The Operations and Evidence sections read actual archived results from authenticated Mattermost conversations.</small></div>
+<div class="arch"><strong>03 · Follow the proof</strong><small>Find the command, agent response, correlation ID, PASS/FAIL result, latency and optional SHA-256 receipt in the repository or authorized operator records.</small></div>
+<div class="arch"><strong>04 · Reproduce with access</strong><small>Authorized reviewers can sign in to the self-hosted Mattermost room, send !ping, !status and !incident, and observe replies. Approval commands are restricted to trusted operators.</small></div>
+</div>
+<p class="sub" style="margin-top:16px">Evidence provenance: <code>/api/liveops/status</code> reads local service checks; <code>/api/liveops/evidence</code> reads sanitized recorded command/response results. The incident triage test uses synthetic anomaly inputs but real Switch, Mattermost and local Qwen integration. Public visitors cannot actuate devices.</p>
+</section>
 <section class="section" id="architecture"><p class="eyebrow" data-i18n="archLabel">HOW IT WORKS</p><h2 data-i18n="archTitle">Private intelligence. Shared decisions.</h2><p class="sub" data-i18n="archSub">Switch coordinates human-agent conversation. InnerOS provides local reasoning and policy boundaries.</p><div class="architecture"><div class="arch"><strong>Switch Core</strong><small data-i18n="arch1">Agent communication, room context, event transport.</small></div><div class="arch"><strong>Mattermost</strong><small data-i18n="arch2">Collaborative channel for operators and agents.</small></div><div class="arch"><strong>AMD ROCm + Qwen</strong><small data-i18n="arch3">Local model inference on sovereign hardware.</small></div><div class="arch"><strong>InnerOS</strong><small data-i18n="arch4">Policy, approval gates, audit and verification.</small></div></div></section>
 <div class="safe" data-i18n="safe">◈ Live service telemetry and recorded agent evidence. Device actions require authenticated authorization within Mattermost and are not exposed publicly.</div>
 </main><footer><div class="wrap foot"><span>© InnerChispa LLC · InnerOS LiveOps</span><a href="https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026" target="_blank" rel="noopener noreferrer" data-i18n="source">View source and technical evidence ↗</a><span data-i18n="separate">Independent Flip the Switch judges experience</span></div></footer>
