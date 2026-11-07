@@ -16,7 +16,7 @@ async function publicAudit(browser){
  const context=await browser.newContext({viewport:{width:1920,height:1080},locale:'en-US',timezoneId:'America/Guayaquil',serviceWorkers:'block',recordVideo:{dir:path.join(out,'public-video'),size:{width:1920,height:1080}}});
  const page=await context.newPage();page.setDefaultTimeout(8000);
  page.on('pageerror',e=>report.pageerrors.push(e.message));
- page.on('response',r=>{if(r.status()>=400)report.http_errors.push({url:new URL(r.url()).origin+new URL(r.url()).pathname,status:r.status()});});
+ page.on('response',r=>{if(r.status()>=400){const u=new URL(r.url());report.http_errors.push({url:u.origin+(u.pathname.startsWith('/cdn-cgi/')?'/cdn-cgi/[ephemeral-challenge-path-redacted]':u.pathname),status:r.status()});}});
  await context.route('**/*',route=>{const req=route.request(),u=new URL(req.url());if(!['GET','HEAD'].includes(req.method())&&!u.pathname.startsWith('/cdn-cgi/challenge-platform/')){report.blocked_application_writes.push({path:u.pathname,method:req.method()});return route.abort();}return route.continue();});
  try{
   const response=await page.goto(target,{waitUntil:'domcontentloaded',timeout:30000});
