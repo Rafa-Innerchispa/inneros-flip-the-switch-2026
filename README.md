@@ -47,11 +47,12 @@ flowchart TD
 
 The deployment runs primary on **AMD 1.5** (`192.168.1.5`, Ubuntu 26.04 LTS, AMD Radeon AI PRO R9700 with 32 GB VRAM) with **Windows** maintained as a functional backup.
 
+- **Public Live Demo Console:** [https://guardian.pcdoctor.ai/#liveops](https://guardian.pcdoctor.ai/#liveops) (HTTPS via Cloudflare Tunnel)
+- **Local LAN Demo Console:** `http://192.168.1.5:8788#liveops`
 - **Switch Core API:** `http://127.0.0.1:62326` (AMD) / `http://127.0.0.1:62226` (Windows)
 - **Switch Gateway Dashboard:** `http://127.0.0.1:62325` (AMD) / `http://127.0.0.1:62225` (Windows)
 - **Mattermost Chat:** `http://127.0.0.1:62327` (AMD) / `http://127.0.0.1:62227` (Windows)
 - **Local LLM Endpoint:** `http://127.0.0.1:8000/v1` (QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ via vLLM)
-- **InnerOS Guardian Console:** `http://127.0.0.1:8788` (LiveOps Tab active)
 
 ## Production Sovereign Node (AMD 1.5) & Fallback Node (Windows)
 

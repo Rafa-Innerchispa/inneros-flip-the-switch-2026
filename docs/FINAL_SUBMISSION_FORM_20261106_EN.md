@@ -28,7 +28,9 @@ Dedicated public repository containing the full open-source delivery, native Swi
 Paste the uploaded video URL (YouTube Unlisted or Loom, under 3 minutes) following `docs/JUDGES_VIDEO_SCRIPT_EN.md`.
 
 ### Live demo / deployment
-Self-hosted sovereign local deployment running on AMD 1.5 Linux node (`192.168.1.5`, Ubuntu 26.04 LTS, AMD Radeon AI PRO R9700 32GB VRAM, ROCm 7.2.1). Services run on isolated local ports: Switch Core (62326), Switch Gateway (62325), Mattermost (62327), vLLM Qwen3-Coder (8000), and InnerOS Guardian Console (8788). Fully documented with live cryptographic receipts in video walkthrough.
+https://guardian.pcdoctor.ai/#liveops
+
+Publicly accessible, HTTPS-secured live demo console hosted on local sovereign AMD 1.5 hardware via Cloudflare Tunnel. Renders live Switch incident room telemetry, local ROCm Qwen3-Coder triage hypotheses, human-in-the-loop gated approval controls, and verifiable SHA-256 cryptographic evidence receipts. Local LAN fallback: `http://192.168.1.5:8788#liveops`.
 
 ## Part 2: Track details
 
