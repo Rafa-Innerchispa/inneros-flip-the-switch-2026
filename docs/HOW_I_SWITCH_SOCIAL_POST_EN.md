@@ -19,7 +19,7 @@ Switch is the essential backbone: native WebSocket streaming, unified room conte
 
 🌐 Live Public Demo: https://liveops.pcdoctor.ai/  
 📂 Open Source Repo: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026  
-📝 Technical Deep Dive: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/feat/switch-liveops-native/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md  
+📝 Technical Deep Dive: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/main/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md  
 
 #HowISwitch #FlipTheSwitch #AI #OpenSource #DevOps #LocalFirst #SwitchRooms #AMD #ROCm
 
