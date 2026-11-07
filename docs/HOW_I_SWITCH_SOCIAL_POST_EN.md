@@ -1,42 +1,39 @@
-# #HowISwitch — Official Submission Social Post
+# #HowISwitch — Verified Social Post (November 7, 2026)
 
-*Copy-ready for X (Twitter), LinkedIn, and WeMakeDevs Discord/Community*
+**Prepared for Rafael López / InnerChispa. Not automatically published.**
 
----
+## Recommended LinkedIn / X post
 
-### Option A: Complete Post (Recommended for X / LinkedIn)
+What happens when an AI agent can diagnose infrastructure problems but must never authorize its own actions?
 
-🚀 Just submitted **InnerOS LiveOps** for the Flip the Switch Hackathon by @WeMakeDevs & @SwitchAgents!
+For the **Flip the Switch Hackathon**, we built **InnerOS LiveOps** at InnerChispa.
 
-We built a local-first, human-governed operational agent that bridges AI to the physical world:
-1️⃣ Anomaly alert lands in a self-hosted Switch Room (Mattermost)
-2️⃣ Local Qwen3-Coder 30B on AMD Radeon AI PRO R9700 (ROCm) generates instant root-cause triage ($0 cloud cost!)
-3️⃣ Deterministic gate blocks unauthorized execution
-4️⃣ Human operator approves via `@inneros-incident-triage !approve <ID>`
-5️⃣ Safe physical cycle executes & outputs an immutable SHA-256 evidence receipt!
+Instead of a chatbot answering in isolation, our operators and a custom Python agent collaborate in a self-hosted Mattermost room through **Switch**.
 
-Switch is the essential backbone: native WebSocket streaming, unified room context, and genuine multi-operator governance without cloud lock-in.
+Here's what we verified:
+- Real Mattermost → Switch → Python agent messages and replies, traced with correlation IDs.
+- Local incident triage using Qwen3-Coder on an AMD Radeon AI PRO R9700 with ROCm/vLLM.
+- A deterministic approval policy that blocks unknown action IDs.
+- Archived command results and SHA-256 evidence receipts for authorized diagnostic tests.
+- A read-only public dashboard showing current service health separately from historical test records.
 
-🌐 Live Public Demo: https://liveops.pcdoctor.ai/  
-📂 Open Source Repo: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026  
-📝 Technical Deep Dive: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/main/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md  
+Our incident integration test uses synthetic anomaly input. The communication, inference, and policy checks run on real infrastructure; we do **not** claim a physical device was repaired.
 
-#HowISwitch #FlipTheSwitch #AI #OpenSource #DevOps #LocalFirst #SwitchRooms #AMD #ROCm
+**Switch connects the people. Local AI analyzes. Human authorization remains in charge.**
 
----
+🔎 https://liveops.pcdoctor.ai/
+💻 https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026
 
-### Option B: Short & Punchy (For Discord / Community channels)
+Rafael López | CEO, InnerChispa LLC
 
-Built **InnerOS LiveOps** for #FlipTheSwitch! 🔀
-Bridging Switch Rooms to physical infrastructure with:
-- Self-hosted Switch Core 0.40.1 + Mattermost
-- Local Qwen3-Coder 30B inference on AMD Radeon R9700 (ROCm)
-- Human-in-the-loop approval gate with SHA-256 cryptographic receipts
-- 8/8 automated E2E tests passing in 9.6s
+#HowISwitch #FlipTheSwitch #InnerOS #LocalAI #Mattermost #ROCm
 
-Check out the live demo & repo:
-🔗 Demo: https://liveops.pcdoctor.ai/
-🔗 Repo: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026
+## Compact X post
 
-#HowISwitch
+Built InnerOS LiveOps for #FlipTheSwitch: real Mattermost → Switch → local Qwen on AMD, traceable replies, human approval gates, and recorded SHA-256 diagnostic receipts. Real integration; synthetic anomaly test; no invented device actuation. https://liveops.pcdoctor.ai/ #HowISwitch
 
+## Submission instructions
+
+1. Publish the post from your own social profile.
+2. Copy the public URL of that post into the optional **Your #HowISwitch post** field on the Flip the Switch submission page.
+3. Keep the separate **Blog post** link for the optional Best Blog prize. A GitHub markdown draft is not itself proof of social publication.
