@@ -22,98 +22,101 @@ footer{border-top:1px solid #26435b;padding:32px 0;color:#a9c0d1;font-size:13px}
 <body>
 <header><nav class="wrap"><a href="#home" class="brand"><span class="mark"><span>◈</span></span>InnerOS LiveOps <span class="pill">Flip the Switch</span></a><div class="navlinks"><a href="#home" data-i18n="navHome">Home</a><a href="#incident" data-i18n="navIncident">Incident</a><a href="#evidence" data-i18n="navEvidence">Evidence</a><a href="#architecture" data-i18n="navArchitecture">Architecture</a></div><button class="lang" id="lang" type="button" aria-label="Switch language">EN / ES</button></nav></header>
 <main class="wrap">
-<section class="hero" id="home"><div><p class="eyebrow" data-i18n="eyebrow">Sovereign agent operations · Flip the Switch 2026</p><h1><span data-i18n="hero1">When AI detects a problem,</span><br><em data-i18n="hero2">humans stay in control.</em></h1><p class="lead" data-i18n="lead">Local-first incident operations powered by Switch, Mattermost, AMD ROCm inference, and verifiable evidence.</p><div class="actions"><button id="demo" class="btn primary" type="button" data-i18n="demo">▶ Explore Judges Demo</button><a class="btn" href="#architecture" data-i18n="architecture">◈ View Architecture</a></div></div><div class="visual" role="img" aria-label="Abstract illuminated local AI compute infrastructure"><div class="orbit"></div><div class="core"><span>◈</span></div></div></section>
-<section class="strip" aria-label="System status"><div class="status"><span class="dot" id="s-switch"></span><span data-i18n="sSwitch">Switch: Checking...</span></div><div class="status"><span class="dot" id="s-chat"></span><span data-i18n="sChat">Mattermost: Checking...</span></div><div class="status"><span class="dot" id="s-ai"></span><span data-i18n="sAi">Qwen: Checking...</span></div><div class="status"><span class="dot ok" id="s-gate"></span><span data-i18n="sGate">Human Gate: Enforced</span></div><div class="status"><span class="dot" id="s-ledger"></span><span data-i18n="sLedger">Evidence: Checking...</span></div></section>
+<section class="hero" id="home"><div><p class="eyebrow" data-i18n="eyebrow">Sovereign agent operations · Flip the Switch 2026</p><h1><span data-i18n="hero1">When AI detects a problem,</span><br><em data-i18n="hero2">humans stay in control.</em></h1><p class="lead" data-i18n="lead">Local-first incident operations powered by Switch, Mattermost, AMD ROCm inference, and verifiable evidence.</p><div class="actions"><a id="operations" class="btn primary" href="#incident" data-i18n="operations">▶ View recorded operations</a><a class="btn" href="#architecture" data-i18n="architecture">◈ View Architecture</a></div></div><div class="visual" role="img" aria-label="Abstract illuminated local AI compute infrastructure"><div class="orbit"></div><div class="core"><span>◈</span></div></div></section>
+<section class="strip" aria-label="System status"><div class="status"><span class="dot" id="s-switch"></span><span data-i18n="sSwitch">Switch: Checking...</span></div><div class="status"><span class="dot" id="s-chat"></span><span data-i18n="sChat">Mattermost: Checking...</span></div><div class="status"><span class="dot" id="s-ai"></span><span data-i18n="sAi">Qwen: Checking...</span></div><div class="status"><span class="dot" id="s-gate"></span><span data-i18n="sGate">Human Gate: Enforced</span></div><div class="status"><span class="dot" id="s-ledger"></span><span data-i18n="sLedger">Evidence: Checking...</span></div></section>
 <section class="flow" aria-label="Incident lifecycle"><div class="step"><span class="emoji">◎</span><div><strong data-i18n="detect">Detect</strong><small data-i18n="detectSub">Identify an incident</small></div></div><div class="step"><span class="emoji">◈</span><div><strong data-i18n="reason">Reason</strong><small data-i18n="reasonSub">Use local AI for context</small></div></div><div class="step"><span class="emoji">♙</span><div><strong data-i18n="authorize">Authorize</strong><small data-i18n="authorizeSub">Require a human decision</small></div></div><div class="step"><span class="emoji">◇</span><div><strong data-i18n="verify">Verify</strong><small data-i18n="verifySub">Record outcome and evidence</small></div></div></section>
-<section class="section" id="incident"><p class="eyebrow" data-i18n="caseLabel">THE STORY IN FOUR STEPS</p><h2 data-i18n="caseTitle">An incident, not just another chatbot answer.</h2><p class="sub" data-i18n="caseSub">Explore a safe illustrative workflow. Nothing on this public page operates real devices.</p><div class="panels"><article class="panel"><h3 data-i18n="incidentPreview">Incident Room Preview</h3><span class="tag" data-i18n="simulated">SIMULATED PLAYGROUND</span><span class="tag amber" data-i18n="severity">Medium severity</span><div class="incident-title" data-i18n="issue">Network degradation detected on Edge Node B2</div><div class="detail"><b data-i18n="hypothesis">AI hypothesis</b><br><span data-i18n="hypoText">A traffic spike could be causing congestion on the upstream link. This is a hypothesis, not a verified root cause.</span></div><div class="detail"><b data-i18n="proposed">Proposed safe response</b><br><span data-i18n="proposalText">Run a read-only network diagnostic. Any change would need a separate authenticated approval.</span></div><p class="notice" id="demo-state" aria-live="polite" data-i18n="pending">Awaiting human review · No live action triggered</p></article>
-<article class="panel" id="evidence"><h3 data-i18n="evidence">Evidence &amp; accountability</h3><span class="tag green" data-i18n="recordedTag">RECORDED LIVE OPERATIONS</span><p class="sub" data-i18n="evidenceSub">Real receipts can be inspected by authorized operators; public examples never invent cryptographic proofs.</p><div class="receipt"><span data-i18n="e1">Incident record</span><small id="ev-rec" data-i18n="ePending">RECORDED_SYNTHETIC: INC-9FFF24EB (Latency Anomaly)</small></div><div class="receipt"><span data-i18n="e2">AI diagnostic</span><small id="ev-diag" data-i18n="eDiag">vLLM ROCm Qwen3-Coder 30B AWQ (AMD 1.5)</small></div><div class="receipt"><span data-i18n="e3">Human approval</span><small id="ev-app" data-i18n="eNotGranted">Approved in Mattermost room by authorized operator</small></div><div class="receipt"><span data-i18n="e4">Readback / outcome</span><small id="ev-hash" data-i18n="eNotExecuted">SHA256:db0157ddbdc18529d96ff329fba3be444743eb3e9b1bb538645a278ec6e70eb1</small></div></article>
-<article class="panel"><h3 data-i18n="timeline">Operator Timeline</h3><div class="timeline"><div class="event"><b data-i18n="t1">01 · Detect</b><small data-i18n="t1s">A monitored event is reported to the room.</small></div><div class="event"><b data-i18n="t2">02 · Reason</b><small data-i18n="t2s">Local inference suggests possible causes.</small></div><div class="event"><b data-i18n="t3">03 · Authorize</b><small data-i18n="t3s">A trusted human must approve a specific action.</small></div><div class="event"><b data-i18n="t4">04 · Verify</b><small data-i18n="t4s">The system records the observed result.</small></div></div></article></div></section>
+<section class="section" id="incident">
+<p class="eyebrow" data-i18n="caseLabel">OPERATIONAL RECORD</p>
+<h2 data-i18n="caseTitle">Follow real agent activity, end to end.</h2>
+<p class="sub" data-i18n="caseSub">Switch and Mattermost carry the operator conversation. This dashboard reads actual service health and recorded agent evidence. Operations are performed only by authenticated room members.</p>
+<div class="panels">
+<article class="panel">
+<h3 data-i18n="incidentPreview">Latest recorded operation</h3>
+<span class="tag" id="operation-class" data-i18n="recordType">AWAITING RECORDS</span>
+<div class="incident-title" id="operation-title" aria-live="polite" data-i18n="noRecord">No verified operation record is currently available.</div>
+<div class="detail"><b data-i18n="operationDetail">What happened</b><p id="operation-detail" data-i18n="pendingRecord">This view will populate from the agent's evidence archive once a record is available.</p></div>
+<div class="detail"><b data-i18n="recordTime">Record time</b><p id="operation-time" data-i18n="unknown">Not available</p></div>
+<p class="notice" id="record-status" aria-live="polite" data-i18n="readOnly">Read-only operational evidence. No device commands are exposed on this page.</p>
+</article>
+<article class="panel" id="evidence">
+<h3 data-i18n="evidence">Evidence &amp; accountability</h3>
+<p class="sub" data-i18n="evidenceSub">Receipts are sourced from recorded Switch-agent operations. Missing evidence is shown as unavailable, never filled with examples.</p>
+<div id="evidence-records" aria-live="polite"><p data-i18n="loading">Retrieving recorded evidence...</p></div>
+</article>
+<article class="panel">
+<h3 data-i18n="timeline">Operator event timeline</h3>
+<div class="timeline" id="event-timeline" aria-live="polite"><p data-i18n="loading">Retrieving recorded evidence...</p></div>
+</article>
+</div>
+</section>
 <section class="section" id="architecture"><p class="eyebrow" data-i18n="archLabel">HOW IT WORKS</p><h2 data-i18n="archTitle">Private intelligence. Shared decisions.</h2><p class="sub" data-i18n="archSub">Switch coordinates human-agent conversation. InnerOS provides local reasoning and policy boundaries.</p><div class="architecture"><div class="arch"><strong>Switch Core</strong><small data-i18n="arch1">Agent communication, room context, event transport.</small></div><div class="arch"><strong>Mattermost</strong><small data-i18n="arch2">Collaborative channel for operators and agents.</small></div><div class="arch"><strong>AMD ROCm + Qwen</strong><small data-i18n="arch3">Local model inference on sovereign hardware.</small></div><div class="arch"><strong>InnerOS</strong><small data-i18n="arch4">Policy, approval gates, audit and verification.</small></div></div></section>
-<div class="safe" data-i18n="safe">◈ Public demonstration: simulated playground and read-only views. Physical actuation is restricted to authenticated Mattermost room operators.</div>
+<div class="safe" data-i18n="safe">◈ Live service telemetry and recorded agent evidence. Device actions require authenticated authorization within Mattermost and are not exposed publicly.</div>
 </main><footer><div class="wrap foot"><span>© InnerChispa LLC · InnerOS LiveOps</span><a href="https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026" target="_blank" rel="noopener noreferrer" data-i18n="source">View source and technical evidence ↗</a><span data-i18n="separate">Independent Flip the Switch judges experience</span></div></footer>
 <script>
 "use strict";
-const translations={
-en:{navHome:"Home",navIncident:"Incident",navEvidence:"Evidence",navArchitecture:"Architecture",eyebrow:"Sovereign agent operations · Flip the Switch 2026",hero1:"When AI detects a problem,",hero2:"humans stay in control.",lead:"Local-first incident operations powered by Switch, Mattermost, AMD ROCm inference, and verifiable evidence.",demo:"▶ Explore Judges Demo",architecture:"◈ View Architecture",sSwitch:"Switch: Checking...",sChat:"Mattermost: Checking...",sAi:"Qwen: Checking...",sGate:"Human Gate: Enforced",sLedger:"Evidence: Checking...",detect:"Detect",detectSub:"Identify an incident",reason:"Reason",reasonSub:"Use local AI for context",authorize:"Authorize",authorizeSub:"Require a human decision",verify:"Verify",verifySub:"Record outcome and evidence",caseLabel:"THE STORY IN FOUR STEPS",caseTitle:"An incident, not just another chatbot answer.",caseSub:"Explore a safe illustrative workflow. Nothing on this public page operates real devices.",incidentPreview:"Incident Room Preview",simulated:"SIMULATED PLAYGROUND",recordedTag:"RECORDED LIVE OPERATIONS",severity:"Medium severity",issue:"Network degradation detected on Edge Node B2",hypothesis:"AI hypothesis",hypoText:"A traffic spike could be causing congestion on the upstream link. This is a hypothesis, not a verified root cause.",proposed:"Proposed safe response",proposalText:"Run a read-only network diagnostic. Any change would need a separate authenticated approval.",pending:"Awaiting human review · No live action triggered",demoDone:"Demo explored · Simulation only · No live action triggered",evidence:"Evidence & accountability",evidenceSub:"Real receipts can be inspected by authorized operators; public examples never invent cryptographic proofs.",e1:"Incident record",e2:"AI diagnostic",e3:"Human approval",e4:"Readback / outcome",ePending:"RECORDED_SYNTHETIC: INC-9FFF24EB (Latency Anomaly)",eDiag:"vLLM ROCm Qwen3-Coder 30B AWQ (AMD 1.5)",eNotGranted:"Approved in Mattermost room by authorized operator",eNotExecuted:"SHA256:db0157ddbdc18529d96ff329fba3be444743eb3e9b1bb538645a278ec6e70eb1",timeline:"Operator Timeline",t1:"01 · Detect",t1s:"A monitored event is reported to the room.",t2:"02 · Reason",t2s:"Local inference suggests possible causes.",t3:"03 · Authorize",t3s:"A trusted human must approve a specific action.",t4:"04 · Verify",t4s:"The system records the observed result.",archLabel:"HOW IT WORKS",archTitle:"Private intelligence. Shared decisions.",archSub:"Switch coordinates human-agent conversation. InnerOS provides local reasoning and policy boundaries.",arch1:"Agent communication, room context, event transport.",arch2:"Collaborative channel for operators and agents.",arch3:"Local model inference on sovereign hardware.",arch4:"Policy, approval gates, audit and verification.",safe:"◈ Public demonstration: simulated playground and read-only views. Physical actuation is restricted to authenticated Mattermost room operators.",source:"View source and technical evidence ↗",separate:"Independent Flip the Switch judges experience"},
-es:{navHome:"Inicio",navIncident:"Incidente",navEvidence:"Evidencias",navArchitecture:"Arquitectura",eyebrow:"Operaciones soberanas con agentes · Flip the Switch 2026",hero1:"Cuando la IA detecta un problema,",hero2:"las personas mantienen el control.",lead:"Operaciones locales de incidentes con Switch, Mattermost, inferencia AMD ROCm y evidencias verificables.",demo:"▶ Explorar demo para jurados",architecture:"◈ Ver arquitectura",sSwitch:"Switch: Verificando...",sChat:"Mattermost: Verificando...",sAi:"Qwen: Verificando...",sGate:"Filtro Humano: Obligatorio",sLedger:"Evidencias: Verificando...",detect:"Detectar",detectSub:"Identificar un incidente",reason:"Analizar",reasonSub:"Contexto con IA local",authorize:"Autorizar",authorizeSub:"Decisión humana obligatoria",verify:"Verificar",verifySub:"Registrar resultado y evidencia",caseLabel:"LA HISTORIA EN CUATRO PASOS",caseTitle:"Un incidente, no otra respuesta de chatbot.",caseSub:"Explora un flujo ilustrativo seguro. Esta página pública no controla dispositivos reales.",incidentPreview:"Vista previa de incidentes",simulated:"ENTORNO SIMULADO",recordedTag:"OPERACIONES REALES REGISTRADAS",severity:"Severidad media",issue:"Degradación de red detectada en el nodo B2",hypothesis:"Hipótesis de IA",hypoText:"Un pico de tráfico podría congestionar el enlace ascendente. Es una hipótesis, no una causa verificada.",proposed:"Respuesta segura propuesta",proposalText:"Ejecutar diagnóstico de red de solo lectura. Cualquier cambio requeriría autorización autenticada independiente.",pending:"Esperando revisión humana · Sin acción real",demoDone:"Demo explorada · Solo simulación · Sin acción real",evidence:"Evidencia y responsabilidad",evidenceSub:"Operadores autorizados pueden inspeccionar recibos reales; la demo pública no inventa pruebas criptográficas.",e1:"Registro del incidente",e2:"Diagnóstico de IA",e3:"Aprobación humana",e4:"Lectura posterior / resultado",ePending:"RECORDED_SYNTHETIC: INC-9FFF24EB (Anomalía de latencia)",eDiag:"vLLM ROCm Qwen3-Coder 30B AWQ (AMD 1.5)",eNotGranted:"Aprobado en sala Mattermost por operador autorizado",eNotExecuted:"SHA256:db0157ddbdc18529d96ff329fba3be444743eb3e9b1bb538645a278ec6e70eb1",timeline:"Cronología del operador",t1:"01 · Detectar",t1s:"Se informa un evento supervisado en la sala.",t2:"02 · Analizar",t2s:"La IA local sugiere posibles causas.",t3:"03 · Autorizar",t3s:"Una persona autenticada aprueba una acción concreta.",t4:"04 · Verificar",t4s:"El sistema registra el resultado observado.",archLabel:"CÓMO FUNCIONA",archTitle:"Inteligencia privada. Decisiones compartidas.",archSub:"Switch coordina conversaciones entre humanos y agentes. InnerOS aporta razonamiento local y límites de seguridad.",arch1:"Comunicación entre agentes, contexto de sala y eventos.",arch2:"Canal colaborativo de operadores y agentes.",arch3:"Inferencia local con infraestructura propia.",arch4:"Políticas, autorizaciones, auditoría y verificación.",safe:"◈ Demostración pública: entorno simulado y vistas de solo lectura. La activación física está restringida a operadores autenticados en Mattermost.",source:"Ver código y evidencia técnica ↗",separate:"Experiencia independiente para los jueces de Flip the Switch"}};
-let lang="en",explored=false;try{lang=localStorage.getItem("inneros-liveops-lang")==="es"?"es":"en"}catch(_){}
-function render(){
-  document.documentElement.lang=lang;
-  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(translations[lang][k])el.textContent=translations[lang][k]});
-  document.querySelector("#demo-state").textContent=explored?translations[lang].demoDone:translations[lang].pending;
-  document.querySelector("#lang").setAttribute("aria-label",lang==="en"?"Change language to Spanish":"Cambiar idioma a inglés");
+const translations = {
+ en: {
+ navHome:"Home", navIncident:"Operations", navEvidence:"Evidence", navArchitecture:"Architecture",
+ eyebrow:"SOVEREIGN AGENT OPERATIONS · FLIP THE SWITCH 2026",
+ hero1:"When AI detects a problem,",hero2:"humans stay in control.",
+ lead:"Real incident-response collaboration through Switch and Mattermost, with local AMD inference and recorded evidence.",
+ operations:"▶ View recorded operations",architecture:"◈ View Architecture",
+ sSwitch:"Switch: Checking...",sChat:"Mattermost: Checking...",sAi:"Qwen: Checking...",sGate:"Approval policy: Checking...",sLedger:"Evidence: Checking...",
+ detect:"Detect",detectSub:"Operator reports an event",reason:"Reason",reasonSub:"Local AI investigates",authorize:"Authorize",authorizeSub:"Authenticated room decision",verify:"Verify",verifySub:"Record the observed result",
+ caseLabel:"OPERATIONAL RECORD",caseTitle:"Follow real agent activity, end to end.",
+ caseSub:"Switch and Mattermost carry the operator conversation. This dashboard reads actual service health and recorded agent evidence. Operations are performed only by authenticated room members.",
+ incidentPreview:"Latest recorded operation",recordType:"AWAITING RECORDS",noRecord:"No verified operation record is currently available.",
+ operationDetail:"What happened",pendingRecord:"This view will populate from the agent's evidence archive once a record is available.",
+ recordTime:"Evidence archive timestamp",unknown:"Not available",readOnly:"Read-only operational evidence. No device commands are exposed on this page.",
+ evidence:"Evidence & accountability", evidenceSub:"Receipts are sourced from recorded Switch-agent operations. Missing evidence is shown as unavailable, never filled with examples.",
+ timeline:"Operator event timeline",loading:"Retrieving recorded evidence...",empty:"No recorded events are currently available.",
+ unavailable:"Recorded evidence unavailable",recorded:"Recorded operation",recordedTest:"Recorded test operation",digest:"SHA-256 receipt",
+ archLabel:"HOW IT WORKS",archTitle:"Private intelligence. Shared decisions.",archSub:"Switch coordinates human-agent conversation. InnerOS provides local reasoning and policy boundaries.",
+ arch1:"Agent communication, room context, event transport.",arch2:"Collaborative channel for operators and agents.",arch3:"Local model inference on sovereign hardware.",arch4:"Policy, approval gates, audit and verification.",
+ safe:"◈ Live service telemetry and recorded agent evidence. Device actions require authenticated authorization within Mattermost and are not exposed publicly.",
+ source:"View source and technical evidence ↗",separate:"InnerOS LiveOps · Flip the Switch 2026",
+ healthy:"Healthy",reachable:"Port reachable",offline:"Unavailable",statusRecorded:"Recorded",policyConfigured:"Policy configured"
+ },
+ es: {
+ navHome:"Inicio",navIncident:"Operaciones",navEvidence:"Evidencias",navArchitecture:"Arquitectura",
+ eyebrow:"OPERACIONES SOBERANAS CON AGENTES · FLIP THE SWITCH 2026",
+ hero1:"Cuando la IA detecta un problema,",hero2:"las personas mantienen el control.",
+ lead:"Colaboración real para responder a incidentes mediante Switch y Mattermost, inferencia AMD local y evidencias registradas.",
+ operations:"▶ Ver operaciones registradas",architecture:"◈ Ver arquitectura",
+ sSwitch:"Switch: Verificando...",sChat:"Mattermost: Verificando...",sAi:"Qwen: Verificando...",sGate:"Política de aprobación: Verificando...",sLedger:"Evidencia: Verificando...",
+ detect:"Detectar",detectSub:"El operador reporta un evento",reason:"Analizar",reasonSub:"La IA local investiga",authorize:"Autorizar",authorizeSub:"Decisión autenticada en la sala",verify:"Verificar",verifySub:"Registrar el resultado observado",
+ caseLabel:"REGISTRO OPERATIVO",caseTitle:"Sigue la actividad real del agente, de principio a fin.",
+ caseSub:"Switch y Mattermost transportan la conversación con operadores. Este panel lee la salud real de los servicios y la evidencia registrada del agente. Solo los miembros autenticados pueden operar.",
+ incidentPreview:"Última operación registrada",recordType:"ESPERANDO REGISTROS",noRecord:"No hay disponible un registro de operación verificado.",
+ operationDetail:"Qué ocurrió",pendingRecord:"Esta vista mostrará los registros del agente cuando estén disponibles.",
+ recordTime:"Fecha del archivo de evidencias",unknown:"No disponible",readOnly:"Evidencia operativa de solo lectura. Esta página no expone comandos de dispositivos.",
+ evidence:"Evidencia y responsabilidad",evidenceSub:"Los recibos provienen de operaciones registradas del agente Switch. Los datos faltantes se muestran como no disponibles, nunca se completan con ejemplos.",
+ timeline:"Cronología de eventos del operador",loading:"Consultando evidencias registradas...",empty:"No hay eventos registrados disponibles.",
+ unavailable:"Evidencia registrada no disponible",recorded:"Operación registrada",recordedTest:"Prueba registrada",digest:"Recibo SHA-256",
+ archLabel:"CÓMO FUNCIONA",archTitle:"Inteligencia privada. Decisiones compartidas.",archSub:"Switch coordina la conversación entre personas y agentes. InnerOS aporta razonamiento local y políticas.",
+ arch1:"Comunicación entre agentes, contexto de sala y transporte de eventos.",arch2:"Canal colaborativo para operadores y agentes.",arch3:"Inferencia local con infraestructura propia.",arch4:"Políticas, autorizaciones, auditoría y verificación.",
+ safe:"◈ Telemetría real de servicios y evidencia registrada del agente. Las acciones requieren autorización autenticada en Mattermost y no están expuestas al público.",
+ source:"Ver código y evidencia técnica ↗",separate:"InnerOS LiveOps · Flip the Switch 2026",
+ healthy:"Operativo",reachable:"Puerto accesible",offline:"No disponible",statusRecorded:"Registrado",policyConfigured:"Política configurada"
+ }
+};
+let lang="en";try{lang=localStorage.getItem("inneros-liveops-lang")==="es"?"es":"en"}catch(_){}
+let latestStatus=null,latestEvidence=null;
+const byId=id=>document.getElementById(id);
+function tr(key){return translations[lang][key]||key}
+function renderText(){document.documentElement.lang=lang;document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(translations[lang][key])el.textContent=tr(key)});byId("lang").setAttribute("aria-label",lang==="en"?"Switch to Spanish":"Cambiar a inglés");renderStatus();renderEvidence()}
+function statusChip(id,key,state,latency){const el=byId(id),label=document.querySelector('[data-i18n="'+key+'"]');if(!el||!label)return;const live=state==="CONNECTED"||state==="ACTIVE_INFERENCE_READY";const tcp=state==="REACHABLE_TCP_ONLY";el.className=live?"dot ok":tcp?"dot tcp":"dot";const suffix=Number.isFinite(latency)?" · "+latency+"ms":"";label.textContent=key==="sSwitch"?"Switch: "+(live?tr("healthy"):tcp?tr("reachable"):tr("offline"))+suffix:key==="sChat"?"Mattermost: "+(live?tr("healthy"):tcp?tr("reachable"):tr("offline"))+suffix:"Qwen: "+(live?tr("healthy"):tcp?tr("reachable"):tr("offline"))+suffix;}
+function renderStatus(){if(!latestStatus)return;const c=latestStatus.components||{};statusChip("s-switch","sSwitch",c.switch_core?.status,c.switch_core?.latency_ms);statusChip("s-chat","sChat",c.mattermost?.status,c.mattermost?.latency_ms);statusChip("s-ai","sAi",c.qwen_local_rocm?.status,c.qwen_local_rocm?.latency_ms);byId("s-gate").className="dot tcp";document.querySelector('[data-i18n="sGate"]').textContent=tr("policyConfigured");const count=c.evidence_ledger?.matrix_pass,valid=c.evidence_ledger?.status==="RECORDED_VERIFIED";byId("s-ledger").className=valid?"dot ok":"dot";document.querySelector('[data-i18n="sLedger"]').textContent=valid?tr("statusRecorded")+": "+String(count||""):"Evidence: "+tr("unavailable")}
+function safeText(v){return typeof v==="string"?v:""}
+function line(parent,kind,body){const node=document.createElement(kind);node.textContent=safeText(body);parent.appendChild(node);return node}
+function renderEvidence(){
+ const raw=Array.isArray(latestEvidence)?latestEvidence:[],panel=byId("evidence-records"),timeline=byId("event-timeline");panel.replaceChildren();timeline.replaceChildren();
+ if(!raw.length){line(panel,"p",latestEvidence===null?tr("unavailable"):tr("empty"));line(timeline,"p",latestEvidence===null?tr("unavailable"):tr("empty"));byId("operation-class").textContent=tr("unavailable");byId("operation-title").textContent=tr("noRecord");byId("operation-detail").textContent=tr("pendingRecord");byId("operation-time").textContent=tr("unknown");return}
+ const arr=raw.slice(-12);for(const item of arr){const box=document.createElement("div");box.className="receipt";line(box,"strong",safeText(item.step).replaceAll("_"," "));line(box,"small",safeText(item.summary));if(item.receipt_digest)line(box,"small",tr("digest")+": "+safeText(item.receipt_digest));panel.appendChild(box);const event=document.createElement("div");event.className="event";line(event,"b",safeText(item.step).replaceAll("_"," "));line(event,"small",safeText(item.summary));timeline.appendChild(event)}
+ const last=arr[arr.length-1];byId("operation-class").textContent=tr("recordedTest");byId("operation-title").textContent=safeText(last.step).replaceAll("_"," ");byId("operation-detail").textContent=safeText(last.summary);byId("operation-time").textContent=safeText(last.archive_timestamp)||tr("unknown");
 }
-document.querySelector("#lang").addEventListener("click",()=>{lang=lang==="en"?"es":"en";try{localStorage.setItem("inneros-liveops-lang",lang)}catch(_){}render();updateTelemetry();});
-document.querySelector("#demo").addEventListener("click",()=>{explored=true;render();document.querySelector("#incident").scrollIntoView({behavior:"smooth"})});
-
-async function updateTelemetry() {
-  try {
-    const res = await fetch("/api/liveops/status");
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data.components) {
-      const c = data.components;
-      const dotSwitch = document.getElementById("s-switch");
-      const dotChat = document.getElementById("s-chat");
-      const dotAi = document.getElementById("s-ai");
-      const dotLedger = document.getElementById("s-ledger");
-      
-      // 1. Switch
-      if (c.switch_core) {
-        if (c.switch_core.status === "CONNECTED") {
-          dotSwitch.className = "dot ok";
-          document.querySelector('[data-i18n="sSwitch"]').textContent = lang === "en" ? `Switch: Connected (${c.switch_core.latency_ms}ms)` : `Switch: Conectado (${c.switch_core.latency_ms}ms)`;
-        } else if (c.switch_core.status === "REACHABLE_TCP_ONLY") {
-          dotSwitch.className = "dot tcp";
-          document.querySelector('[data-i18n="sSwitch"]').textContent = lang === "en" ? `Switch: TCP Reachable (${c.switch_core.latency_ms}ms)` : `Switch: TCP Accesible (${c.switch_core.latency_ms}ms)`;
-        }
-      }
-      
-      // 2. Mattermost
-      if (c.mattermost) {
-        if (c.mattermost.status === "CONNECTED") {
-          dotChat.className = "dot ok";
-          document.querySelector('[data-i18n="sChat"]').textContent = lang === "en" ? `Mattermost: Connected (${c.mattermost.latency_ms}ms)` : `Mattermost: Conectado (${c.mattermost.latency_ms}ms)`;
-        } else if (c.mattermost.status === "REACHABLE_TCP_ONLY") {
-          dotChat.className = "dot tcp";
-          document.querySelector('[data-i18n="sChat"]').textContent = lang === "en" ? `Mattermost: TCP Reachable (${c.mattermost.latency_ms}ms)` : `Mattermost: TCP Accesible (${c.mattermost.latency_ms}ms)`;
-        }
-      }
-      
-      // 3. Local Qwen AI
-      if (c.qwen_local_rocm) {
-        if (c.qwen_local_rocm.status === "ACTIVE_INFERENCE_READY") {
-          dotAi.className = "dot ok";
-          document.querySelector('[data-i18n="sAi"]').textContent = lang === "en" ? `Qwen: Ready (ROCm, ${c.qwen_local_rocm.latency_ms}ms)` : `Qwen: Listo (ROCm, ${c.qwen_local_rocm.latency_ms}ms)`;
-        } else if (c.qwen_local_rocm.status === "REACHABLE_TCP_ONLY") {
-          dotAi.className = "dot tcp";
-          document.querySelector('[data-i18n="sAi"]').textContent = lang === "en" ? `Qwen: TCP Reachable (${c.qwen_local_rocm.latency_ms}ms)` : `Qwen: TCP Accesible (${c.qwen_local_rocm.latency_ms}ms)`;
-        }
-      }
-      
-      // 4. Evidence
-      if (c.evidence_ledger) {
-        if (c.evidence_ledger.status === "RECORDED_VERIFIED") {
-          dotLedger.className = "dot ok";
-          document.querySelector('[data-i18n="sLedger"]').textContent = lang === "en" ? `Evidence: ${c.evidence_ledger.matrix_pass} (Recorded)` : `Evidencias: ${c.evidence_ledger.matrix_pass} (Registrado)`;
-        }
-        if (c.evidence_ledger.latest_incident_record) {
-          const recEl = document.getElementById("ev-rec");
-          if (recEl) recEl.textContent = c.evidence_ledger.latest_incident_record;
-        }
-        if (c.evidence_ledger.latest_cryptographic_digest) {
-          const hashEl = document.getElementById("ev-hash");
-          if (hashEl) hashEl.textContent = c.evidence_ledger.latest_cryptographic_digest;
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("LiveOps telemetry notice:", e);
-  }
-}
-
-render();
-updateTelemetry();
-setInterval(updateTelemetry, 15000);
+async function poll(){try{const [r1,r2]=await Promise.all([fetch("/api/liveops/status",{cache:"no-store"}),fetch("/api/liveops/evidence",{cache:"no-store"})]);latestStatus=r1.ok?await r1.json():null;latestEvidence=r2.ok?await r2.json():null}catch(_){latestStatus=null;latestEvidence=null}renderText()}
+byId("lang").addEventListener("click",()=>{lang=lang==="en"?"es":"en";try{localStorage.setItem("inneros-liveops-lang",lang)}catch(_){}renderText()});
+renderText();poll();setInterval(poll,15000);
 </script>
 </body></html>
