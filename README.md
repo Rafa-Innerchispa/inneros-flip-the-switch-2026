@@ -92,20 +92,20 @@ python3 tests/test_e2e_full_suite.py
 | **7** | Active Resilience & Recovery | Systemd Unit + Switch WS | 1067ms | Process supervision, readiness check, live ping roundtrip |
 | **8** | Windows Independence | Local Linux Host + ROCm Hardware | 0.7ms | Kernel 7.0.0 x86_64, `/dev/kfd` ROCm present, 0 remote proxy |
 
-**Result: 8 / 8 PASS (100% Verified).** Evidence stored in `data/e2e_results.json` and rendered live in the Guardian console.
+**Result: 8 / 8 PASS (100% Verified).** Evidence stored in `data/e2e_results.json` and available in the LiveOps evidence archive.
 
 ## Live Demonstration Flow (< 3 Minutes)
 
-1. **Trigger Incident:** In Mattermost `#inneros-live-operations` or via the Guardian Console, issue `@inneros-incident-triage !incident`.
+1. **Trigger Incident:** In Mattermost `#inneros-live-operations` issue `@inneros-incident-triage !incident`.
 2. **Local AI Triage:** Local Qwen3-Coder on AMD Radeon GPU analyzes telemetry anomaly, posts root-cause hypothesis and proposes action `ACT-XXXXXX`.
 3. **Safety Gate:** Action cannot execute without human approval. Attempting unauthorized execution (`!approve ACT-FAKE`) is blocked immediately.
-4. **Human Approval:** Authorized operator replies `@inneros-incident-triage !approve ACT-XXXXXX` (or clicks "Authorize" in Guardian).
+4. **Human Approval:** Authorized operator replies `@inneros-incident-triage !approve ACT-XXXXXX` .
 5. **Execution & Evidence:** Action executes safely, state is verified, and a tamper-evident SHA-256 evidence receipt is issued and recorded in the audit ledger.
 
 ## Dedicated Public Repository
 
 - **GitHub Repository:** [Rafa-Innerchispa/inneros-flip-the-switch-2026](https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026)
-- **Primary Delivery Branch:** `feat/switch-liveops-native`
+- **Primary Delivery Branch:** `main`
 - **License:** Apache 2.0 (Open-Source Submission)
 
 ## Reproducible Test Execution
@@ -122,7 +122,7 @@ python3 tests/test_e2e_full_suite.py
 
 **Pre-existing before Nov 3:** InnerOS/Physical Guardian architecture, domain contracts for synthetic incidents, local inference infrastructure and initial offline tests; see [reuse manifest](docs/REUSE_MANIFEST.md).
 
-**Built during hackathon:** Native Python Switch agent protocol connector, self-hosted Docker Compose stack on AMD 1.5, WebSocket event streaming, bidirectional Mattermost bridge with correlation tokens, ROCm GPU vLLM integration, interactive Guardian Web Console LiveOps module, and cryptographic SHA-256 evidence ledger.
+**Built during hackathon:** Native Python Switch agent protocol connector, self-hosted Docker Compose stack on AMD 1.5, WebSocket event streaming, bidirectional Mattermost bridge with correlation tokens, ROCm GPU vLLM integration, independent LiveOps judges console, and cryptographic SHA-256 evidence ledger.
 
 ## Links & Submission Deliverables
 
