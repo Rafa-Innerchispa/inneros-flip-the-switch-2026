@@ -137,7 +137,7 @@ InnerOS LiveOps brings commercial-grade governance to personal environments: the
 
 To allow hackathon judges and community members to inspect the live system without compromising LAN security, we exposed the **InnerOS Guardian Web Console** via Cloudflare Tunnel:
 
-* **Live Demo URL:** [https://guardian.pcdoctor.ai/#liveops](https://guardian.pcdoctor.ai/#liveops)
+* **Live Demo URL:** [https://liveops.pcdoctor.ai/](https://guardian.pcdoctor.ai/#liveops)
 * **Under the Hood:** Cloudflare Edge terminates HTTPS with SSL, proxies traffic through the `opportunityops` tunnel to AMD 1.5 port 8788.
 * **Security Isolation:** All internal databases (Postgres), Switch APIs, and vLLM GPU inference ports remain strictly inaccessible from the Internet.
 
