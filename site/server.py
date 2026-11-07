@@ -232,8 +232,9 @@ def get_sanitized_evidence():
                 "archive_timestamp": archive_time,
             }
             digest = item.get("receipt_hash")
-            if isinstance(digest, str) and len(digest) == 64 and all(c in "0123456789abcdefABCDEF" for c in digest):
-                record["receipt_digest"] = "SHA256:" + digest.lower()
+            if isinstance(digest, str) and len(digest.strip(".")) >= 16 and all(c in "0123456789abcdefABCDEF." for c in digest):
+                clean_d = digest.strip(".")
+                record["receipt_digest"] = "SHA256:" + clean_d.lower() + ("..." if len(clean_d) < 64 else "")
 
             sanitized.append(record)
         sanitized = sanitized[-20:]
