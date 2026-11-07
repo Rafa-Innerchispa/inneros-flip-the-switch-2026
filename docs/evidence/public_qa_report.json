@@ -1,0 +1,18 @@
+{
+  "default_lang_en": true,
+  "ping1": {
+    "stage": "COMPLETED",
+    "cid": "CID-LIVE-PING-AB92F2",
+    "latency": "1571.37 ms",
+    "ok": true
+  },
+  "ai_gated": true,
+  "ping2": {
+    "stage": "COMPLETED",
+    "cid": "CID-LIVE-PING-CE1A57",
+    "latency": "1431.48 ms",
+    "ok": true
+  },
+  "unique_cids": true,
+  "both_passed": true
+}
