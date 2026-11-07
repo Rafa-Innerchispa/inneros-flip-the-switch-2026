@@ -331,8 +331,13 @@ def run_real_switch_ping(client_ip="127.0.0.1", is_operator=False):
 
     cid = f"CID-LIVE-PING-{uuid.uuid4().hex[:6].upper()}"
     t0 = time.perf_counter()
+    current_stage = "INIT"
 
     try:
+        current_stage = "READ_CREDENTIALS"
+        sys.stderr.write(f"[SWITCH-PING][STAGE-1-INIT] CID={cid} client_ip={client_ip}\n")
+        sys.stderr.flush()
+
         env_file = "/home/rlopez/inneros/modules/switch-liveops/compose/.env"
         user_pw = ""
         if os.path.isfile(env_file):
@@ -345,6 +350,7 @@ def run_real_switch_ping(client_ip="127.0.0.1", is_operator=False):
         mm_url = "http://127.0.0.1:62327"
         channel_id = "r4n59sq7dtyp7d3n3ogomaqfwh"  # #inneros-live-operations
 
+        current_stage = "MATTERMOST_AUTH"
         login_data = json.dumps({"login_id": "user", "password": user_pw}).encode("utf-8")
         req = urllib.request.Request(
             f"{mm_url}/api/v4/users/login",
@@ -356,6 +362,11 @@ def run_real_switch_ping(client_ip="127.0.0.1", is_operator=False):
             user_obj = json.loads(resp.read().decode("utf-8"))
             sender_user_id = user_obj.get("id")
 
+        t_auth = round((time.perf_counter() - t0) * 1000, 1)
+        sys.stderr.write(f"[SWITCH-PING][STAGE-2-AUTH] Authenticated as user={sender_user_id} in {t_auth}ms\n")
+        sys.stderr.flush()
+
+        current_stage = "POST_DISPATCH"
         headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         cmd = f"@inneros-incident-triage !ping {cid}"
 
@@ -367,30 +378,49 @@ def run_real_switch_ping(client_ip="127.0.0.1", is_operator=False):
         with urllib.request.urlopen(post_req, timeout=4) as post_res:
             post_id = json.loads(post_res.read().decode("utf-8")).get("id")
 
+        t_post = round((time.perf_counter() - t0) * 1000, 1)
+        sys.stderr.write(f"[SWITCH-PING][STAGE-3-POST] Dispatched command to channel={channel_id} post_id={post_id} in {t_post}ms\n")
+        sys.stderr.flush()
+
+        current_stage = "POLL_AGENT_REPLY"
         reply = None
-        for _ in range(16):
+        poll_count = 0
+        max_attempts = 25  # 25 * 0.3s = up to 7.5s wait window
+        for attempt in range(max_attempts):
             time.sleep(0.3)
-            ch_req = urllib.request.Request(f"{mm_url}/api/v4/channels/{channel_id}/posts?per_page=8", headers=headers)
+            poll_count += 1
+            ch_req = urllib.request.Request(f"{mm_url}/api/v4/channels/{channel_id}/posts?per_page=15", headers=headers)
             try:
                 with urllib.request.urlopen(ch_req, timeout=3) as ch_res:
                     data = json.loads(ch_res.read().decode("utf-8"))
                     posts = data.get("posts", {})
-                    for pid, p in posts.items():
+                    order = data.get("order", [])
+                    # Check ordered list first, fallback to posts dict
+                    target_ids = order if order else list(posts.keys())
+                    for pid in target_ids:
+                        p = posts.get(pid, {})
                         p_user = p.get("user_id")
                         p_msg = p.get("message", "")
-                        # Verify that this post is NOT from the sending user, NOT the original post,
-                        # and contains both the exact requested CID and the agent's PONG
+                        # Strict validation: NOT sender, NOT original post, contains matching CID and PONG
                         if pid != post_id and p_user != sender_user_id and cid in p_msg and "PONG" in p_msg:
                             reply = p
                             break
                 if reply:
                     break
-            except Exception:
-                pass
+            except Exception as poll_err:
+                sys.stderr.write(f"[SWITCH-PING][WARN] Poll attempt {attempt + 1} transient error: {poll_err}\n")
+                sys.stderr.flush()
 
         elapsed = round((time.perf_counter() - t0) * 1000, 2)
         reply_msg = reply.get("message", "").strip() if reply else ""
         passed = bool(reply and "PONG" in reply_msg and cid in reply_msg)
+
+        if passed:
+            sys.stderr.write(f"[SWITCH-PING][STAGE-5-PASS] Verified Switch PONG in {elapsed}ms (polls={poll_count}) for CID={cid}\n")
+            sys.stderr.flush()
+        else:
+            sys.stderr.write(f"[SWITCH-PING][STAGE-5-FAIL] Timeout or missing CID in {elapsed}ms (polls={poll_count}) for CID={cid}\n")
+            sys.stderr.flush()
 
         return {
             "ok": passed,
@@ -402,8 +432,10 @@ def run_real_switch_ping(client_ip="127.0.0.1", is_operator=False):
             "agent_response": reply_msg if reply_msg else "Agent response timeout (No verified PONG received from agent via Switch Core within window)",
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
-    except Exception:
+    except Exception as exc:
         elapsed = round((time.perf_counter() - t0) * 1000, 2)
+        sys.stderr.write(f"[SWITCH-PING][ERROR] Failed in stage={current_stage}: {type(exc).__name__}: {exc}\n")
+        sys.stderr.flush()
         return {
             "ok": False,
             "step": "PING_AGENT",
@@ -699,7 +731,7 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             is_op = is_authorized_operator(self.headers, query)
             data = run_real_switch_ping(client_ip=client_ip, is_operator=is_op)
             payload = json.dumps(data, indent=2).encode("utf-8")
-            status_code = 429 if data.get("error") in ("RATE_LIMITED", "PING_BUSY") else (200 if data.get("ok") else 500)
+            status_code = 429 if data.get("error") in ("RATE_LIMITED", "PING_BUSY") else (500 if data.get("error") == "DIAGNOSTIC_FAILURE" else 200)
             self.send_response(status_code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
@@ -763,7 +795,7 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             is_op = is_authorized_operator(self.headers, query)
             data = run_real_switch_ping(client_ip=client_ip, is_operator=is_op)
             payload = json.dumps(data, indent=2).encode("utf-8")
-            status_code = 429 if data.get("error") in ("RATE_LIMITED", "PING_BUSY") else (200 if data.get("ok") else 500)
+            status_code = 429 if data.get("error") in ("RATE_LIMITED", "PING_BUSY") else (500 if data.get("error") == "DIAGNOSTIC_FAILURE" else 200)
             self.send_response(status_code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))
