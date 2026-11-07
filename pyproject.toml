@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inneros-incident-room"
+version = "0.1.0"
+description = "Local-first incident room with synthetic safe actions and Switch agent protocol"
+requires-python = ">=3.10"
+license = {text = "Proprietary - evaluation preparation only"}
+authors = [{name = "InnerChispa LLC"}]
+dependencies = []
+
+[project.optional-dependencies]
+switch = ["websockets>=14,<17"]
+inneros = ["mcp>=2,<3", "httpx2"]
+live = ["websockets>=14,<17", "mcp>=2,<3", "httpx2"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

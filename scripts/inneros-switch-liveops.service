@@ -1,0 +1,16 @@
+[Unit]
+Description=InnerOS LiveOps Switch Connector Daemon
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/rlopez/inneros/modules/switch-liveops
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/rlopez/inneros/modules/switch-liveops/scripts/run_adapter.sh
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/rlopez/inneros/modules/switch-liveops/logs/adapter.log
+StandardError=append:/home/rlopez/inneros/modules/switch-liveops/logs/adapter-error.log
+
+[Install]
+WantedBy=default.target
