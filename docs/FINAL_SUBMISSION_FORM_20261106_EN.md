@@ -34,10 +34,12 @@ Publicly accessible, HTTPS-secured live demo console hosted on local sovereign A
 
 ## Part 2: Track details
 
-- Pull requests: leave blank.
-- Blog post: optional.
-- Wispr usage card: leave blank unless Wispr Flow was used.
-- #HowISwitch post: optional.
+- **Best Business Workflow:** Yes. Facilities, server rooms, managed buildings, and enterprise IT support. Replaces fragmented monitoring/chat tabs with a single Switch Room, instant local AI triage, and audited human approvals.
+- **Best Personal or Creative Workflow:** Yes. Home lab and smart home infrastructure resilience. Inspect anomalous breakers, network bridges, or lights through Mattermost with mobile approvals, without opening inbound router ports or leaking private data to cloud LLMs.
+- **Best Blog:** https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/feat/switch-liveops-native/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md (Deep technical article on WebSocket debugging, IPv6 hangs, unclaimed message resolution, Windows -> AMD migration, ROCm inference, and Switch architectural insights).
+- **#HowISwitch Post:** See `docs/HOW_I_SWITCH_SOCIAL_POST_EN.md` for copy-ready text and links for X/LinkedIn/Community submission.
+- **Best Core Contribution:** Leave blank (no assigned core issue on Switch repo; adhering strictly to hackathon contribution rules).
+- **Code with Wispr:** Leave blank (not claimed; adhering strictly to hackathon authenticity rules).
 
 ## Part 3: How you used Switch
 

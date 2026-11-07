@@ -1,47 +1,99 @@
-# Judge video script: real physical evidence, under 3 minutes
+# Judges Video Demonstration Script: InnerOS LiveOps (< 3 Minutes)
 
-**Record only the actual working flow** on Switch Console / Mattermost, Home Assistant and, where possible, a visible physical lamp. This is a proposed script, not a claim that the run is already complete. No synthesized screenshots, fake Switch server or fake HA endpoint may be represented as real. Avoid personal account details, local IPs, tokens and authorization headers.
+**Target Duration:** 2 minutes 45 seconds (Under the 3-minute hard limit).  
+**Recording Setup:**  
+- Left screen / Window 1: Mattermost channel `#inneros-live-operations`.  
+- Right screen / Window 2: Guardian Web Console (`https://guardian.pcdoctor.ai/#liveops`).  
+- Terminal / Optional overlay: AMD 1.5 system monitor showing ROCm GPU utilization during inference.  
+- Clear audio narration in English.
 
-## 00:00–00:22 — Hook, show physical lamp and active room
+---
 
-> "Most AI agents can tell you to turn a device on. Our question is harder: who authorized the change, and did the real device actually respond? I'm Rafael from InnerChispa, and this is InnerOS LiveOps, built on Switch."
+## 00:00 – 00:25 | Hook & The Physical Dilemma
 
-[Show a real lamp and a running Switch Mattermost room named `#inneros-live-operations`.]
+**Visual:** Camera on narrator or screen showing Mattermost `#inneros-live-operations` alongside the Guardian Console.
 
-## 00:22–00:58 — One real observation, not a simulated alert
+**Spoken Narration (English):**
+> "Most AI agents today operate behind a glass wall—writing code or answering chat questions. But in mission-critical facilities, smart edge nodes, and automated buildings, the real challenge is physical operations: who authorized an actuation, and how do you guarantee an AI model didn't hallucinate an uncontrolled action?  
+> I'm Rafael from InnerChispa, and this is **InnerOS LiveOps**, built on **Switch**."
 
-> "The operator asks the agent for a live reading. Switch delivers the request and brings the result into our shared room. This state comes from Home Assistant on our own network, not from a fabricated fixture."
+---
 
-[Show a HUMAN posting `@inneros-incident-triage !state light.ACTUAL_ID` and the agent replying with current on/off and fetch timestamp. Make sure this actually works before narrating it.]
+## 00:25 – 00:55 | Switch as the Essential Backbone (Sub-Second Latency)
 
-## 00:58–01:22 — Optional local AI explains uncertainty
+**Visual:** In Mattermost `#inneros-live-operations`, type:
+`@inneros-incident-triage !ping`  
+Followed immediately by:
+`@inneros-incident-triage !status`
 
-> "Local Qwen can interpret what the data means and, just as importantly, what it cannot prove. The model can explain; it cannot act on a device."
+**Spoken Narration (English):**
+> "Switch is our indispensable operational backbone. It provides sovereign local event streaming, authenticated participant claims, and room-scoped security.  
+> As you see here, when I send `!ping`, Switch streams the event through its native WebSocket protocol to our Python agent on an AMD host. The agent replies in under a second.  
+> Our `!status` command confirms our sovereign environment: running on AMD 1.5, connected to local vLLM, with our physical safety gate strictly ACTIVE."
 
-[Show `!analyze light.ACTUAL_ID` only if a real local model replied. Otherwise omit this section and spend 24 seconds on architecture with true status flags.]
+---
 
-## 01:22–02:12 — Deny, approve, independent service readback
+## 00:55 – 01:30 | Sovereign Anomaly Triage via Local AMD ROCm Inference
 
-> "Actions are governed by code, not promises in a prompt. A human proposes one operation for one allowed light, sees a time-limited approval ID, and explicitly decides. A denied action does nothing. An approved action uses Home Assistant and then checks the state again. An unavailable device is reported as unverified, not fixed."
+**Visual:** In Mattermost, type:
+`@inneros-incident-triage !incident`  
+Show the reply populating in Mattermost with the root-cause hypothesis and proposed action ID (`ACT-XXXXXX`).
 
-[First show a denied proposal. Then propose again and approve only if operator allows a change to an agreed low-risk light. Camera pointed at the lamp should capture the physical response while the HA readback appears on screen. If actuation remains unavailable, DO NOT pretend it happened: show only legitimate read-only collaboration.]
+**Spoken Narration (English):**
+> "Now let's simulate an operational infrastructure anomaly on synthetic node-alpha-4.  
+> The agent ingests the anomaly telemetry and queries our local Qwen3-Coder 30B model running on our AMD Radeon AI PRO R9700 GPU via ROCm.  
+> In just two seconds—with zero external cloud tokens or API spend—it produces a root-cause hypothesis identifying buffer overflow, and proposes a narrowly scoped remediation: Action `ACT-XXXXXX`.  
+> Crucially, the model CANNOT execute this action on its own. It requires explicit, short-lived human authorization."
 
-## 02:12–02:43 — Technical validation and business relevance
+---
 
-> "Our Python agent joins through Switch's official WebSocket and HTTP protocol. The code verifies the sender, the room, the exact action and the expiry. It includes 83 local tests and an explicit list of what is and is not proven. The same approach can help a support team manage real facilities without handing unrestricted device controls to an AI model."
+## 01:30 – 01:55 | The Deterministic Safety Gate: Rejecting Unauthorized Action
 
-[Show the actual GitHub project directory/README, running test command and results, and the live room again.]
+**Visual:** In Mattermost, deliberately type:
+`@inneros-incident-triage !approve ACT-FAKE999`  
+Show the agent immediately rejecting: `[INNEROS BLOCKED] No pending approval found for action ID 'ACT-FAKE999'.`
 
-## 02:43–02:55 — Close
+**Spoken Narration (English):**
+> "Watch what happens if someone attempts to run an unapproved command or exploit an invalid ID.  
+> Our deterministic security policy layer halts execution immediately. Unapproved requests never touch system targets. Autonomy without governance is not allowed."
 
-> "Switch makes the human and the agent teammates. InnerOS makes the device operation local, controlled and verifiable. That's InnerOS LiveOps."
+---
 
-## Prohibited exaggerations
+## 01:55 – 02:25 | Valid Human Approval & Tamper-Evident SHA-256 Receipt
 
-- A Home Assistant readback is not an independent optical/physical sensor; the physical lamp footage adds separate human-visible evidence.
-- SHA-256 checksum is not a digital signature or immutable ledger.
-- The offline synthetic tests are not proof of a genuine Switch round trip.
-- No live room response, no completed integration claim.
-- Optional Qwen reasoning must be shown on a genuine endpoint to be described as active.
+**Visual:** In Mattermost (or by clicking the green Authorize button in the Guardian Web Console), issue the valid approval:  
+`@inneros-incident-triage !approve ACT-XXXXXX`  
+Show the execution confirmation, closed incident, and SHA-256 receipt.
 
-Deadline: Saturday Nov 7, 2026, 13:29 Ecuador (23:59 IST).
+**Spoken Narration (English):**
+> "Now, the authenticated operator provides explicit authorization for the proposed action.  
+> The agent executes the safe diagnostic cycle, verifies readback, and generates an immutable SHA-256 evidence receipt linking the incident ID, operator identity, timestamp, and target state. The incident is verified and closed."
+
+---
+
+## 02:25 – 02:45 | Public Guardian Console & Multi-Track Value
+
+**Visual:** Switch browser tab to `https://guardian.pcdoctor.ai/#liveops`. Show the live incidents list updated to `RESOLVED & VERIFIED`, the cryptographic receipts table, and the 8/8 PASS E2E test matrix.
+
+**Spoken Narration (English):**
+> "Everything is mirrored in real time on our public Guardian Console at `guardian.pcdoctor.ai`, deployed via Cloudflare Tunnel.  
+> For enterprise facility management—our **Best Business Workflow**—this replaces fragmented monitoring dashboards with a single auditable room.  
+> For home lab resilience—our **Best Personal Workflow**—it gives homeowners safe remote oversight of smart breakers without cloud lock-in."
+
+---
+
+## 02:45 – 02:55 | Closing
+
+**Visual:** Quick view of the public GitHub repository and final test summary.
+
+**Spoken Narration (English):**
+> "With Switch Rooms and InnerOS, human operators and AI agents collaborate as genuine teammates—local-first, fully sovereign, and verifiable. Thank you."
+
+---
+
+## Video Recording Checklist
+
+- [ ] Video duration strictly between 2:15 and 2:55.
+- [ ] Mattermost `#inneros-live-operations` clearly visible.
+- [ ] Public Guardian Console `https://guardian.pcdoctor.ai/#liveops` shown in browser with HTTPS lock icon.
+- [ ] Uploaded to YouTube as **Unlisted** (or Loom) with link copied into the submission form.

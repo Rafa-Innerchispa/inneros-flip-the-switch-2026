@@ -13,3 +13,4 @@ content = content.replace("service: http://192.168.1.5:8793", "service: http://1
 
 path.write_text(content, encoding="utf-8")
 print("opportunityops.yml successfully updated with liveops.pcdoctor.ai -> http://192.168.1.5:8788")
+
