@@ -192,8 +192,22 @@ class LiveOpsEngine:
 
         self.pending_actions: dict[str, dict] = {}
         self.incidents: list[dict] = []
+        self.evidence_log: list[dict] = []
         self.processed_ids: set[str] = set()
         self.status_file = self.config_dir / "liveops-status.json"
+
+        # Restore previous state if present
+        if self.status_file.is_file():
+            try:
+                prev = json.loads(self.status_file.read_text(encoding="utf-8"))
+                self.incidents = prev.get("incidents", [])
+                self.pending_actions = {
+                    a["action_id"]: a for a in prev.get("pending_actions", [])
+                    if isinstance(a, dict) and "action_id" in a
+                }
+                self.evidence_log = prev.get("evidence_log", [])
+            except Exception:
+                pass
 
     def update_status(self, state: str, extra: dict | None = None) -> None:
         info = {
@@ -203,9 +217,13 @@ class LiveOpsEngine:
             "room_id": self.room_id,
             "room_name": self.room_name,
             "agent_id": self.agent_id,
+            "agent_name": self.agent_name,
             "updated_at": clock_iso(),
             "pending_count": len(self.pending_actions),
+            "pending_actions": list(self.pending_actions.values()),
             "incidents_count": len(self.incidents),
+            "incidents": self.incidents[-20:],
+            "evidence_log": self.evidence_log[-20:],
             "llm_online": self.llm.is_available()
         }
         if extra:
@@ -291,22 +309,28 @@ class LiveOpsEngine:
 
     def handle_command(self, sender: str, text: str) -> str | None:
         """Processes addressed text commands and returns the response string."""
+        import re
         raw = text.strip()
         tokens = [t for t in raw.split() if not t.startswith("@")]
         if not tokens:
             return None
         cmd = tokens[0].lower()
 
+        # Extract correlation ID if present (e.g. CID-12345 or CORR-12345)
+        corr_match = re.search(r"\b(CID-[A-Za-z0-9_-]+|CORR-[A-Za-z0-9_-]+)\b", text)
+        corr_id = corr_match.group(1) if corr_match else None
+        corr_header = f" [{corr_id}]" if corr_id else ""
+
         # 1. Ping command
         if cmd == "!ping":
             now = clock_iso()
-            return f"[INNEROS REAL SWITCH {self.node_id}] PONG | {self.node_id} -> Switch WS -> Python Native -> Switch HTTP | {now} | System Normal."
+            return f"[INNEROS REAL SWITCH {self.node_id}]{corr_header} PONG | {self.node_id} -> Switch WS -> Python Native -> Switch HTTP | {now} | System Normal."
 
         # 2. Status command
         if cmd == "!status":
             llm_ok = self.llm.is_available()
             return (
-                f"[INNEROS STATUS {self.node_id}] "
+                f"[INNEROS STATUS {self.node_id}]{corr_header} "
                 f"Node: {self.node_id} | "
                 f"Agent: {self.agent_name} | "
                 f"Room: {self.room_name} | "
@@ -335,7 +359,8 @@ class LiveOpsEngine:
                 "analysis": analysis,
                 "status": "AWAITING_HUMAN_APPROVAL",
                 "proposed_action": act_id,
-                "target": "smart_circuit_breaker_b2"
+                "target": "smart_circuit_breaker_b2",
+                "correlation_id": corr_id or f"CORR-{inc_id}"
             }
             self.incidents.append(incident_record)
 
@@ -346,12 +371,13 @@ class LiveOpsEngine:
                 "target": "smart_circuit_breaker_b2",
                 "created_at": time.time(),
                 "expires_at": time.time() + 600,
-                "action_type": "SAFE_DIAGNOSTIC_RESTART"
+                "action_type": "SAFE_DIAGNOSTIC_RESTART",
+                "correlation_id": corr_id or f"CORR-{act_id}"
             }
             self.update_status("incident_open", {"latest_incident": inc_id})
 
             return (
-                f"🚨 [INNEROS INCIDENT {inc_id}] Detected on {self.node_id}!\n"
+                f"🚨 [INNEROS INCIDENT {inc_id}]{corr_header} Detected on {self.node_id}!\n"
                 f"🤖 AI Triage ({self.node_id} ROCm): {analysis}\n"
                 f"🛡️ Proposed Gated Action: {act_id} (SAFE_DIAGNOSTIC_RESTART on smart_circuit_breaker_b2)\n"
                 f"⏳ Human approval required (valid 600s): Reply '@{self.agent_name} !approve {act_id}' or '!deny {act_id}'"
@@ -362,11 +388,11 @@ class LiveOpsEngine:
             act_id = tokens[1].strip()
             pending = self.pending_actions.get(act_id)
             if not pending:
-                return f"[INNEROS BLOCKED] No pending approval found for action ID '{act_id}'."
+                return f"[INNEROS BLOCKED]{corr_header} No pending approval found for action ID '{act_id}'."
 
             if time.time() > pending["expires_at"]:
                 del self.pending_actions[act_id]
-                return f"[INNEROS EXPIRED] Action '{act_id}' expired without authorization. Action cancelled."
+                return f"[INNEROS EXPIRED]{corr_header} Action '{act_id}' expired without authorization. Action cancelled."
 
             # Authorization accepted
             del self.pending_actions[act_id]
@@ -380,9 +406,22 @@ class LiveOpsEngine:
                 "node_id": self.node_id,
                 "executed_at": clock_iso(),
                 "result": "SUCCESSFUL_DIAGNOSTIC_EXECUTION",
-                "verification": "VERIFIED_SAFE_RESTORED"
+                "verification": "VERIFIED_SAFE_RESTORED",
+                "correlation_id": corr_id or pending.get("correlation_id") or f"CORR-{act_id}"
             }
             receipt_hash = sha256(json.dumps(receipt_payload, sort_keys=True).encode()).hexdigest()
+
+            # Record in evidence log
+            evidence_entry = {
+                "hash": receipt_hash,
+                "incident_id": inc_id,
+                "action_id": act_id,
+                "approver": sender,
+                "timestamp": receipt_payload["executed_at"],
+                "target": pending["target"],
+                "correlation_id": receipt_payload["correlation_id"]
+            }
+            self.evidence_log.append(evidence_entry)
 
             # Update incident
             for inc in self.incidents:
@@ -393,7 +432,7 @@ class LiveOpsEngine:
             self.update_status("action_executed", {"receipt": receipt_hash})
 
             return (
-                f"✅ [INNEROS ACTION EXECUTED] Action {act_id} APPROVED by {sender}.\n"
+                f"✅ [INNEROS ACTION EXECUTED]{corr_header} Action {act_id} APPROVED by {sender}.\n"
                 f"⚡ Executed safe cycle on target '{pending['target']}' on {self.node_id}.\n"
                 f"📜 Cryptographic Evidence Receipt: SHA256:{receipt_hash[:24]}...\n"
                 f"🟢 State Verified: Incident {inc_id} CLOSED. System normal."
@@ -408,8 +447,9 @@ class LiveOpsEngine:
                 for inc in self.incidents:
                     if inc["id"] == inc_id:
                         inc["status"] = "DENIED_BY_OPERATOR"
-                return f"🛑 [INNEROS DENIED] Action {act_id} rejected by operator {sender}. No changes executed."
-            return f"[INNEROS] No pending action found for '{act_id}'."
+                self.update_status("action_denied", {"denied_action": act_id})
+                return f"🛑 [INNEROS DENIED]{corr_header} Action {act_id} rejected by operator {sender}. No changes executed."
+            return f"[INNEROS BLOCKED]{corr_header} No pending action found for '{act_id}'."
 
         # 6. Help command
         return (

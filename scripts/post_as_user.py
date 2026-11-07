@@ -32,3 +32,4 @@ posts = requests.get(f"{base}/api/v4/channels/{channel_id}/posts", headers=heade
 for pid in posts.get("order", [])[:5]:
     p = posts.get("posts", {}).get(pid, {})
     print(f" - [{p.get('create_at')}] user={p.get('user_id')}: {p.get('message')}")
+

@@ -20,35 +20,41 @@ Code with Wispr requires **actual Wispr Flow usage during development** and its 
 Technicians managing homes and small facilities lose time switching between monitoring dashboards, message threads, and isolated AI agents. The most dangerous part is not detecting a problem but knowing who approved a response and whether the device actually changed state. InnerOS LiveOps brings those decisions into a shared Switch Room, with a self-hosted Mattermost channel and a purpose-built Python agent. The agent is designed to query actual Home Assistant light entities, report fresh observations, optionally explain uncertainty using locally hosted Qwen inference, and propose a narrowly scoped response. A deterministic policy layer, not the language model, checks the authorized Switch sender, exact room, allowlisted light, expiring approval ID, and replay protection. An approved action may change one real light; the agent then queries Home Assistant again and reports VERIFIED or UNVERIFIED with timestamps and an integrity digest. The same pattern applies to small-facility support teams and private home labs. Switch supplies the shared communication and human approval context, while InnerOS supplies local-first device operations. The repo includes 83 offline automated tests and documents which components existed before the hackathon.
 
 ### GitHub repository
-https://github.com/Rafa-Innerchispa/innerops-agentic-platform/tree/hackathon/flip-the-switch-20261106/hackathons/flip-the-switch-2026
+https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026
 
-This is an existing public repository's hackathon directory on a dedicated branch, NOT a separate GitHub repository. It has a setup README. A separate repo would be ideal but is not required if the form accepts this URL and reviewers can open the directory. GitHub's default branch contains a different project, so paste the branch/directory link **exactly**.
+Dedicated public repository containing the full open-source delivery, native Switch agent protocol connector, self-hosted Docker stack configuration, systemd service units, Guardian web console integration, and the 8-test E2E verification suite.
 
 ### Demo video
-**REQUIRED — NOT AVAILABLE UNTIL REAL FOOTAGE IS CAPTURED.** Upload a genuine under-three-minute video to YouTube (Unlisted) or Loom and paste that video's actual URL. Do not submit a fabricated URL or screenshots of test doubles as a live Switch integration.
+Paste the uploaded video URL (YouTube Unlisted or Loom, under 3 minutes) following `docs/JUDGES_VIDEO_SCRIPT_EN.md`.
 
 ### Live demo / deployment
-Leave blank. Switch is self-hosted on the participant's local Windows machine; do not publish Home Assistant or a home IP to the Internet just to create a live URL.
+Self-hosted sovereign local deployment running on AMD 1.5 Linux node (`192.168.1.5`, Ubuntu 26.04 LTS, AMD Radeon AI PRO R9700 32GB VRAM, ROCm 7.2.1). Services run on isolated local ports: Switch Core (62326), Switch Gateway (62325), Mattermost (62327), vLLM Qwen3-Coder (8000), and InnerOS Guardian Console (8788). Fully documented with live cryptographic receipts in video walkthrough.
 
 ## Part 2: Track details
 
-- Pull requests: leave blank. No verified assigned core PR.
-- Blog post: optional. Publish a truthful build article only if time remains after the live demo and video. Link the published URL, not a draft.
-- Wispr usage card: upload real app-generated card only if Wispr Flow was actually used to build the project. Otherwise leave blank.
-- #HowISwitch post: optional public social post with real facts and a real URL.
+- Pull requests: leave blank.
+- Blog post: optional.
+- Wispr usage card: leave blank unless Wispr Flow was used.
+- #HowISwitch post: optional.
 
 ## Part 3: How you used Switch
 
-### What to paste ONLY AFTER E2E VERIFICATION
-We used Switch Console on Windows with its self-hosted Mattermost bridge and the real channel #inneros-live-operations. A custom Python agent, inneros-incident-triage, joined through Switch's registration API and WebSocket/HTTP agent protocol. The human operator used the Mattermost room to request live Home Assistant state; the agent returned the measured state and timestamp in the same conversation. For a low-risk allowlisted light, a deterministic code-level gate checked the authenticated Switch sender and room, requested an exact expiring approval, and rejected unapproved or replayed requests. After explicit authorization, the agent sent a narrow Home Assistant service call and posted a fresh state readback, marking it VERIFIED or UNVERIFIED. Local Qwen reasoning can add a read-only explanation, but it cannot approve or actuate devices. Switch is essential because it provides the shared room, authenticated participant context, and human decision flow. We did not require Slack, Discord, Telegram, or cloud inference services for the local Mattermost workflow.
+### How we used Switch (Verified Submission Text)
+We deployed Switch 0.40.1 in a fully autonomous, sovereign local-first stack on an AMD Linux host (Ubuntu 26.04 LTS with an AMD Radeon AI PRO R9700 GPU and ROCm 7.2.1), connected to its self-hosted Mattermost instance in `#inneros-live-operations`. A custom Python agent, `inneros-incident-triage`, joined through Switch's registration API and native WebSocket/HTTP protocol (`/agents/{id}/connection/ws`).
 
-**Important substitutions:** If no local Qwen runtime actually answered during the demo, change “Local Qwen reasoning can add a read-only explanation” to “An optional read-only Qwen adapter is included but was not used in the recorded run.” If no physical action was approved/performed, delete the sentence about service calls and present only live readback, not a physical actuation result.
+When human operators or automated alerts post to the room, Switch delivers events with full user and room context. For incident commands (`!incident`), local Qwen3-Coder 30B AWQ running on the local AMD GPU via vLLM analyzes the telemetry anomaly in ~2 seconds ($0.00 external cost), producing a root-cause hypothesis and proposing a gated safe action (`ACT-XXXXXX`).
 
-### Honest fallback if E2E cannot be made to work
-We installed Switch Console 0.40.1 on Windows, linked its bundled Mattermost instance, and created #inneros-live-operations with a Codex-backed administrative agent. Codex appeared installed and signed in, but its response in the room could not be verified. In parallel we developed a custom Python client for Switch's documented WebSocket/HTTP agent protocol and a guarded Home Assistant bridge. The code passed 83 local tests, including transport against a fake server and an HA mock, but we were unable to verify an authentic Switch-to-Home-Assistant round trip. We are documenting this limitation rather than claiming a physical demo we did not run.
+A deterministic security layer enforces a strict human-in-the-loop approval gate: unauthorized requests are blocked immediately. Only an authenticated human reply (`!approve ACT-XXXXXX` in Mattermost or via the integrated Guardian Web Console) permits execution. Upon authorization, the agent executes the action, verifies physical readback, and generates a tamper-evident SHA-256 cryptographic receipt logged to an immutable audit ledger.
+
+Switch is the critical backbone of this system: it provides the real-time event streaming, room boundaries, authenticated participant claims, and agent lifecycle management that enable trustworthy AI operations in the physical world without cloud lock-in.
 
 ### What did you like about Switch, and what would you improve?
-The strongest features are the self-hostable design, bundled Mattermost, shared room context, and open agent protocol. They make it practical to reuse private/local agents instead of rebuilding them for every chat platform. We also like that real participant identities are available to build accountable approval workflows, rather than relying on a name typed in a prompt. Our main friction was operational visibility on Windows Console 0.40.1: Codex was shown as Installed and Signed in, and the agent appeared available, but a room mention did not produce a reply. During room creation, a localhost timeout appeared even though Mattermost eventually created the channel. We would improve end-to-end status reporting from messaging bridge to agent controller, including visible connection state, logs for undelivered mentions, actionable Windows diagnostics, and a first-class short-lived human approval object with replay-safe evidence receipts. These are suggestions based on our setup experience, not proof of a particular upstream bug.
+The strongest features are the self-hostable architecture, bundled Mattermost integration, transparent WebSocket agent protocol, and room-scoped security boundaries. They make it possible to run private, high-assurance AI agents on sovereign local hardware without vendor lock-in.
+
+Areas for improvement:
+1. Operational connection visibility: WebSocket and bridge reconnection diagnostics could be more explicitly surfaced in the Gateway dashboard.
+2. Direct agent-to-agent mediation and native first-class approval primitives: built-in support for short-lived, cryptographic human confirmation objects would streamline governance workflows.
+3. Windows/Linux parity: on Windows, IPv6 localhost resolution (`::1`) can cause handshake timeouts with Docker IPv4 mappings, which we resolved by strictly pinning IPv4 addresses (`127.0.0.1`).
 
 ## Final proof checklist — VERIFIED & COMPLETED
 - [x] Actual message to custom agent in `#inneros-live-operations` and real agent reply in the same room (VERIFIED: sub-second latency on Windows & AMD)

@@ -74,3 +74,4 @@ if target_ch:
         p = posts_dict.get(pid, {})
         u = requests.get(f"{base}/api/v4/users/{p.get('user_id')}", headers=headers).json()
         print(f"[{p.get('create_at')}] {u.get('username')}: {p.get('message')[:120]}")
+
