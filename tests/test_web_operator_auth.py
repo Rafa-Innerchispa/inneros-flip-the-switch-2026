@@ -36,6 +36,13 @@ class OperatorAuthTests(unittest.TestCase):
     def test_no_builtin_default_credential(self):
         self.assertFalse(hasattr(web, "DEFAULT_OPERATOR_TOKEN"))
 
+    def test_public_frontend_does_not_capture_operator_credentials(self):
+        frontend = (ROOT / "site/index.html").read_text(encoding="utf-8")
+        self.assertNotIn('?token=', frontend)
+        self.assertNotIn('authenticateOperator', frontend)
+        self.assertNotIn('sessionStorage.getItem("inneros_operator_token")', frontend)
+        self.assertNotIn('sessionStorage.setItem("inneros_operator_token"', frontend)
+
     def test_existing_environment_credential_is_preserved(self):
         os.environ["LIVEOPS_OPERATOR_TOKEN"] = self.token
         self.assertEqual(web.get_operator_token(), self.token)
