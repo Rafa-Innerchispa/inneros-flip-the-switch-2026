@@ -28,9 +28,11 @@ Dedicated public repository containing the full open-source delivery, native Swi
 Paste the uploaded video URL (YouTube Unlisted or Loom, under 3 minutes) following `docs/JUDGES_VIDEO_SCRIPT_EN.md`.
 
 ### Live demo / deployment
-https://guardian.pcdoctor.ai/#liveops
+https://inneros-act3.creatorcore.ai/
 
-Publicly accessible, HTTPS-secured live demo console hosted on local sovereign AMD 1.5 hardware via Cloudflare Tunnel. Renders live Switch incident room telemetry, local ROCm Qwen3-Coder triage hypotheses, human-in-the-loop gated approval controls, and verifiable SHA-256 cryptographic evidence receipts. Local LAN fallback: `http://192.168.1.5:8788#liveops`.
+(Alternative HTTPS mirror: https://liveops.pcdoctor.ai/)
+
+Publicly accessible, HTTPS-secured standalone live demo console hosted on local sovereign AMD 1.5 hardware via Cloudflare Tunnel. Features bilingual EN/ES judge interface, live Switch incident room telemetry (:62326), local ROCm Qwen3-Coder triage hypotheses (:8000), human-in-the-loop gated approval controls, and verifiable SHA-256 cryptographic evidence receipts from real operations. Completely independent and permanently decoupled from the Meta Hackathon project (which remains restored at https://guardian.pcdoctor.ai/). Local LAN console: `http://192.168.1.5:8790`.
 
 ## Part 2: Track details
 

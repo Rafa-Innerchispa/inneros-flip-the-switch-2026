@@ -38,8 +38,8 @@ flowchart TD
 | Reply from custom agent in real room (`!ping` -> `PONG`) | **100% Verified (<1s latency on both Windows and Linux)** |
 | Dedicated self-hosted Switch Stack on AMD 1.5 (Core, Gateway, MM, Postgres) | **100% Operational (Ports 62325-62328)** |
 | Local AI inference via ROCm (Qwen3-Coder 30B AWQ on Radeon AI PRO R9700) | **100% Verified (Real GPU triage ~2s)** |
-| Systemd Managed Persistence (`inneros-switch-liveops.service`) | **Active & Running on AMD 1.5** |
-| InnerOS Guardian Web Console Integration (`:8788/api/liveops/status`) | **Integrated & Live on AMD 1.5** |
+| Systemd Managed Persistence (`inneros-switch-liveops.service` & `inneros-switch-standalone-web.service`) | **Active & Running on AMD 1.5** |
+| Standalone LiveOps Judges Console (`:8790` / HTTPS Cloudflare Tunnel) | **Deployed & Verified Standalone** |
 | Full 8-test E2E Test Suite (`test_e2e_full_suite.py`) | **8/8 PASS in 8.55s** |
 | Final video and manual WeMakeDevs submission | Ready for operator upload & submission |
 
@@ -47,12 +47,13 @@ flowchart TD
 
 The deployment runs primary on **AMD 1.5** (`192.168.1.5`, Ubuntu 26.04 LTS, AMD Radeon AI PRO R9700 with 32 GB VRAM) with **Windows** maintained as a functional backup.
 
-- **Public Live Demo Console:** [https://guardian.pcdoctor.ai/#liveops](https://guardian.pcdoctor.ai/#liveops) (HTTPS via Cloudflare Tunnel)
-- **Local LAN Demo Console:** `http://192.168.1.5:8788#liveops`
+- **Public Live Demo Console:** [https://inneros-act3.creatorcore.ai/](https://inneros-act3.creatorcore.ai/) (HTTPS via Cloudflare Tunnel; alternative: `https://liveops.pcdoctor.ai/`)
+- **Local LAN Demo Console:** `http://192.168.1.5:8790`
 - **Switch Core API:** `http://127.0.0.1:62326` (AMD) / `http://127.0.0.1:62226` (Windows)
 - **Switch Gateway Dashboard:** `http://127.0.0.1:62325` (AMD) / `http://127.0.0.1:62225` (Windows)
 - **Mattermost Chat:** `http://127.0.0.1:62327` (AMD) / `http://127.0.0.1:62227` (Windows)
 - **Local LLM Endpoint:** `http://127.0.0.1:8000/v1` (QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ via vLLM)
+- **Meta Project Decoupling:** Meta Global Hackathon 2026 remains completely isolated and restored at `https://guardian.pcdoctor.ai/` (:8788).
 
 ## Production Sovereign Node (AMD 1.5) & Fallback Node (Windows)
 
@@ -65,7 +66,7 @@ The workflow operates primarily on **AMD 1.5** (`192.168.1.5`, Ubuntu 26.04 LTS,
   - **PostgreSQL Database:** `127.0.0.1:62328`
   - **Local AI Inference Engine:** `http://127.0.0.1:8000/v1` (QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ on Radeon AI PRO R9700 via vLLM, ~2s latency, $0.00 cloud cost)
   - **LiveOps Agent Daemon:** `systemd --user` unit `inneros-switch-liveops.service` (Always-On WebSocket)
-  - **InnerOS Guardian Web Console:** `http://192.168.1.5:8788#liveops` (Interactive incident triage, human approval buttons, live telemetry, and cryptographic evidence ledger)
+  - **Standalone LiveOps Web Service:** `systemd --user` unit `inneros-switch-standalone-web.service` on port `8790` (Bilingual EN/ES, live component telemetry, simulated playground, cryptographic evidence ledger)
 
 - **Secondary Windows Stack (Verified Local Fallback):**
   - Ports: Switch Core `:62226`, Gateway `:62225`, Mattermost `:62227`, Postgres `:62228`.
