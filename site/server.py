@@ -175,14 +175,14 @@ def get_system_telemetry():
                 "status": e2e_status,
                 "matrix_pass": matrix_str,
                 "recorded_timestamp": e2e_ts,
-                "latest_incident_record": f"RECORDED_SYNTHETIC: {last_inc_id}" if last_inc_id else None,
+                "latest_incident_record": f"RECORDED_TEST_INCIDENT: {last_inc_id}" if last_inc_id else None,
                 "latest_cryptographic_digest": f"SHA256:{last_hash}" if last_hash else None,
                 "evidence_timestamp": last_op_ts
             }
         },
         "public_disclosure": {
-            "web_mode": "PUBLIC_DEMO_AND_READONLY_TELEMETRY",
-            "interactive_simulation": "All web buttons on this page run simulated workflows. No physical devices are actuated from the web.",
+            "web_mode": "PUBLIC_READONLY_OPERATIONS",
+            "record_source": "Switch and Mattermost evidence archive. Events are recorded tests unless independently verified as production actions.",
             "operational_boundary": "Live actuation is restricted exclusively to authenticated operators inside the sovereign Mattermost room on AMD 1.5."
         }
     }
@@ -197,8 +197,13 @@ def get_sanitized_evidence():
         with open(ev_path, "r", encoding="utf-8") as f:
             raw = json.load(f)
 
+        archive_time = datetime.fromtimestamp(os.path.getmtime(ev_path), tz=timezone.utc).isoformat()
         for item in raw:
+            if not isinstance(item, dict):
+                continue
             step = item.get("step", "UNKNOWN")
+            if step not in {"PING", "STATUS", "INCIDENT_TRIAGE", "AUTH_BLOCK", "APPROVE_EXECUTE"}:
+                continue
             cid = item.get("correlation_id", "N/A")
             latency = item.get("latency_ms", 0.0)
             status = item.get("status", "UNKNOWN")
@@ -209,11 +214,11 @@ def get_sanitized_evidence():
             elif step == "STATUS":
                 desc = "Agent self-report: Node AMD-1.5, Room #inneros-live-operations, Local LLM Online, Safety Gate Active"
             elif step == "INCIDENT_TRIAGE":
-                desc = "Synthetic incident triage: Telemetry latency anomaly analyzed by local Qwen3-Coder 30B AWQ; safe diagnostic action proposed"
+                desc = "Recorded agent triage test: telemetry anomaly analyzed with local Qwen and a gated diagnostic action proposed"
             elif step == "AUTH_BLOCK":
                 desc = "Deterministic policy block: Unauthorized or nonexistent action ID rejected; zero physical action taken"
             elif step == "APPROVE_EXECUTE":
-                desc = "Authorized execution: Gated safe diagnostic cycle executed on edge target; cryptographic SHA-256 receipt recorded"
+                desc = "Authenticated approval test: safe diagnostic execution and SHA-256 receipt recorded; physical device actuation is not claimed"
             else:
                 desc = "System coordination event"
 
@@ -224,11 +229,14 @@ def get_sanitized_evidence():
                 "result": status,
                 "classification": "RECORDED_TEST_RESULT",
                 "summary": desc,
+                "archive_timestamp": archive_time,
             }
-            if item.get("receipt_hash"):
-                record["receipt_digest"] = "SHA256:" + str(item.get("receipt_hash"))
+            digest = item.get("receipt_hash")
+            if isinstance(digest, str) and len(digest) == 64 and all(c in "0123456789abcdefABCDEF" for c in digest):
+                record["receipt_digest"] = "SHA256:" + digest.lower()
 
             sanitized.append(record)
+        sanitized = sanitized[-20:]
     except Exception as e:
         sanitized = [{"error": "Unable to read evidence archive safely"}]
 
