@@ -22,7 +22,7 @@ Technicians managing homes and small facilities lose time switching between moni
 ### GitHub repository
 https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026
 
-Dedicated public repository containing the full open-source delivery, native Switch agent protocol connector, self-hosted Docker stack configuration, systemd service units, Guardian web console integration, and the 8-test E2E verification suite.
+Dedicated public repository containing the full open-source delivery, native Switch agent protocol connector, self-hosted Docker stack configuration, systemd service units, standalone LiveOps judges console, and the 8-test E2E verification suite.
 
 ### Demo video
 Paste the uploaded video URL (YouTube Unlisted or Loom, under 3 minutes) following `docs/JUDGES_VIDEO_SCRIPT_EN.md`.
@@ -36,7 +36,7 @@ Publicly accessible, HTTPS-secured standalone live demo console hosted on local 
 
 - **Best Business Workflow:** Yes. Facilities, server rooms, managed buildings, and enterprise IT support. Replaces fragmented monitoring/chat tabs with a single Switch Room, instant local AI triage, and audited human approvals.
 - **Best Personal or Creative Workflow:** Yes. Home lab and smart home infrastructure resilience. Inspect anomalous breakers, network bridges, or lights through Mattermost with mobile approvals, without opening inbound router ports or leaking private data to cloud LLMs.
-- **Best Blog:** https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/feat/switch-liveops-native/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md (Deep technical article on WebSocket debugging, IPv6 hangs, unclaimed message resolution, Windows -> AMD migration, ROCm inference, and Switch architectural insights).
+- **Best Blog:** https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/main/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md (Deep technical article on WebSocket debugging, IPv6 hangs, unclaimed message resolution, Windows -> AMD migration, ROCm inference, and Switch architectural insights).
 - **#HowISwitch Post:** See `docs/HOW_I_SWITCH_SOCIAL_POST_EN.md` for copy-ready text and links for X/LinkedIn/Community submission.
 - **Best Core Contribution:** Leave blank (no assigned core issue on Switch repo; adhering strictly to hackathon contribution rules).
 - **Code with Wispr:** Leave blank (not claimed; adhering strictly to hackathon authenticity rules).
@@ -48,7 +48,7 @@ We deployed Switch 0.40.1 in a fully autonomous, sovereign local-first stack on 
 
 When human operators or automated alerts post to the room, Switch delivers events with full user and room context. For incident commands (`!incident`), local Qwen3-Coder 30B AWQ running on the local AMD GPU via vLLM analyzes the telemetry anomaly in ~2 seconds ($0.00 external cost), producing a root-cause hypothesis and proposing a gated safe action (`ACT-XXXXXX`).
 
-A deterministic security layer enforces a strict human-in-the-loop approval gate: unauthorized requests are blocked immediately. Only an authenticated human reply (`!approve ACT-XXXXXX` in Mattermost or via the integrated Guardian Web Console) permits execution. Upon authorization, the agent executes the action, verifies physical readback, and generates a tamper-evident SHA-256 cryptographic receipt logged to an immutable audit ledger.
+A deterministic security layer enforces a strict human-in-the-loop approval gate: unauthorized requests are blocked immediately. Only an authenticated human reply (`!approve ACT-XXXXXX` in Mattermost ) permits execution. Upon authorization, the agent executes the action, verifies available readback, and generates a tamper-evident SHA-256 cryptographic receipt logged to an tamper-evident evidence archive.
 
 Switch is the critical backbone of this system: it provides the real-time event streaming, room boundaries, authenticated participant claims, and agent lifecycle management that enable trustworthy AI operations in the physical world without cloud lock-in.
 
