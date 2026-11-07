@@ -114,7 +114,7 @@ const translations = {
  healthy:"Operativo",reachable:"Puerto accesible",offline:"No disponible",statusRecorded:"Registrado",policyConfigured:"Política configurada"
  }
 };
-let lang="en";try{lang=localStorage.getItem("inneros-liveops-lang")==="es"?"es":"en"}catch(_){}
+let lang="en";try{const p=new URLSearchParams(window.location.search).get("lang");lang=(p==="es"||p==="en")?p:(localStorage.getItem("inneros-liveops-lang")==="es"?"es":"en")}catch(_){}
 let latestStatus=null,latestEvidence=null;
 const byId=id=>document.getElementById(id);
 function tr(key){return translations[lang][key]||key}
