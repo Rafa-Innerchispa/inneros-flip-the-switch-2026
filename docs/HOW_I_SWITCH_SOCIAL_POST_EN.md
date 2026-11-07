@@ -17,7 +17,7 @@ We built a local-first, human-governed operational agent that bridges AI to the 
 
 Switch is the essential backbone: native WebSocket streaming, unified room context, and genuine multi-operator governance without cloud lock-in.
 
-🌐 Live Public Demo: https://guardian.pcdoctor.ai/#liveops  
+🌐 Live Public Demo: https://liveops.pcdoctor.ai/  
 📂 Open Source Repo: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026  
 📝 Technical Deep Dive: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026/blob/feat/switch-liveops-native/docs/BLOG_POST_HOW_WE_BUILT_INNEROS_LIVEOPS_EN.md  
 
