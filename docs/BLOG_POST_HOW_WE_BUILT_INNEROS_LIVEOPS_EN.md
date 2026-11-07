@@ -42,7 +42,7 @@ flowchart LR
     Operator -->|!approve ACT-XXXXXX| Switch
     Switch -->|Approval Event| Connector
     Connector -->|SHA-256 Digest| Ledger[Tamper-Evident Ledger]
-    Connector -.-> Console[Guardian Console :8788]
+    Connector -.-> Console[LiveOps Console :8790]
 ```
 
 ---
@@ -135,9 +135,9 @@ InnerOS LiveOps brings commercial-grade governance to personal environments: the
 
 ## 6. Public Cloudflare Tunnel Deployment
 
-To allow hackathon judges and community members to inspect the live system without compromising LAN security, we exposed the **InnerOS Guardian Web Console** via Cloudflare Tunnel:
+To allow hackathon judges and community members to inspect the live system without compromising LAN security, we exposed the **standalone InnerOS LiveOps judges console** via Cloudflare Tunnel:
 
-* **Live Demo URL:** [https://liveops.pcdoctor.ai/](https://guardian.pcdoctor.ai/#liveops)
+* **Live Demo URL:** [https://liveops.pcdoctor.ai/](https://liveops.pcdoctor.ai/)
 * **Under the Hood:** Cloudflare Edge terminates HTTPS with SSL, proxies traffic through the `opportunityops` tunnel to AMD 1.5 port 8788.
 * **Security Isolation:** All internal databases (Postgres), Switch APIs, and vLLM GPU inference ports remain strictly inaccessible from the Internet.
 
