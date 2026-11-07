@@ -26,7 +26,6 @@ DATA_DIR = "/home/rlopez/inneros/modules/switch-liveops/data"
 
 ALLOWED_ORIGINS = {
     "https://liveops.pcdoctor.ai",
-    "https://guardian.pcdoctor.ai",
     "http://localhost:8790",
     "http://127.0.0.1:8790",
     "http://192.168.1.5:8790",
@@ -111,8 +110,8 @@ def get_system_telemetry():
 
     # 5. Last Verified Live Operation Receipt
     ev_path = os.path.join(DATA_DIR, "live_mattermost_evidence.json")
-    last_inc_id = "INC-9FFF24EB"
-    last_hash = "db0157ddbdc18529d96ff329fba3be444743eb3e9b1bb538645a278ec6e70eb1"
+    last_inc_id = None
+    last_hash = None
     last_op_ts = None
     if os.path.exists(ev_path):
         try:
@@ -142,7 +141,7 @@ def get_system_telemetry():
             "Best Blog",
             "#HowISwitch"
         ],
-        "host_node": "AMD-1.5 (Sovereign Local Hardware)",
+        "host_node": "Local AMD ROCm infrastructure",
         "telemetry_timestamp": now_utc,
         "components": {
             "switch_core": {
@@ -167,7 +166,7 @@ def get_system_telemetry():
                 "role": "Local Sovereign Inference Engine"
             },
             "human_safety_gate": {
-                "status": "ENFORCED",
+                "status": "POLICY_CONFIGURED",
                 "mode": "RESTRICTED_READ_ONLY_PUBLIC",
                 "physical_actuation_live": False,
                 "policy": "Deterministic policy requires authenticated room sender and active unexpired grant ID"
@@ -176,8 +175,8 @@ def get_system_telemetry():
                 "status": e2e_status,
                 "matrix_pass": matrix_str,
                 "recorded_timestamp": e2e_ts,
-                "latest_incident_record": f"RECORDED_SYNTHETIC: {last_inc_id}",
-                "latest_cryptographic_digest": f"SHA256:{last_hash}",
+                "latest_incident_record": f"RECORDED_SYNTHETIC: {last_inc_id}" if last_inc_id else None,
+                "latest_cryptographic_digest": f"SHA256:{last_hash}" if last_hash else None,
                 "evidence_timestamp": last_op_ts
             }
         },
@@ -223,7 +222,7 @@ def get_sanitized_evidence():
                 "correlation_id": cid,
                 "latency_ms": latency,
                 "result": status,
-                "classification": "RECORDED_LIVE_VERIFIED",
+                "classification": "RECORDED_TEST_RESULT",
                 "summary": desc,
             }
             if item.get("receipt_hash"):
