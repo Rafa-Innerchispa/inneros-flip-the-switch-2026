@@ -12,12 +12,14 @@ import sys
 import json
 import time
 import socket
+import subprocess
+import uuid
 import urllib.request
 import urllib.error
 import http.server
 import socketserver
 from datetime import datetime, timezone
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 PORT = int(os.environ.get("PORT", 8790))
 HOST = os.environ.get("HOST", "0.0.0.0")
@@ -56,7 +58,9 @@ def get_system_telemetry():
     now_utc = datetime.now(timezone.utc).isoformat()
     
     # 1. Switch Core check
-    sw_http_ok, _, sw_latency = check_http("http://127.0.0.1:62326/api/v1/health")
+    sw_http_ok, _, sw_latency = check_http("http://127.0.0.1:62326/")
+    if not sw_http_ok:
+        sw_http_ok, _, sw_latency = check_http("http://127.0.0.1:62326/api/v1/health")
     if not sw_http_ok:
         sw_tcp_ok, sw_latency = check_tcp("127.0.0.1", 62326)
         sw_status = "REACHABLE_TCP_ONLY" if sw_tcp_ok else "UNREACHABLE"
@@ -87,7 +91,21 @@ def get_system_telemetry():
         llm_tcp_ok, llm_latency = check_tcp("127.0.0.1", 8000)
         llm_status = "REACHABLE_TCP_ONLY" if llm_tcp_ok else "UNAVAILABLE"
 
-    # 4. Evidence Matrix check
+    # 4. Agent process check
+    ag_status = "UNKNOWN"
+    ag_latency = 0.0
+    t_ag = time.perf_counter()
+    try:
+        ag_proc = subprocess.run(
+            ["systemctl", "--user", "is-active", "inneros-switch-liveops.service"],
+            capture_output=True, text=True, timeout=0.8
+        )
+        ag_latency = round((time.perf_counter() - t_ag) * 1000, 2)
+        ag_status = "CONNECTED" if ag_proc.stdout.strip() == "active" else "INACTIVE"
+    except Exception:
+        ag_latency = round((time.perf_counter() - t_ag) * 1000, 2)
+
+    # 5. Evidence Matrix check
     e2e_path = os.path.join(DATA_DIR, "e2e_results.json")
     if os.path.exists(e2e_path):
         try:
@@ -108,7 +126,7 @@ def get_system_telemetry():
         matrix_str = "UNKNOWN"
         e2e_ts = None
 
-    # 5. Last Verified Live Operation Receipt
+    # 6. Last Verified Live Operation Receipt
     ev_path = os.path.join(DATA_DIR, "live_mattermost_evidence.json")
     last_inc_id = None
     last_hash = None
@@ -165,6 +183,13 @@ def get_system_telemetry():
                 "latency_ms": llm_latency,
                 "role": "Local Sovereign Inference Engine"
             },
+            "inneros_agent": {
+                "status": ag_status,
+                "service": "inneros-switch-liveops.service",
+                "node_id": "AMD-1.5",
+                "latency_ms": ag_latency,
+                "role": "Autonomous Incident Triage & Safety Gate Connector"
+            },
             "human_safety_gate": {
                 "status": "POLICY_CONFIGURED",
                 "mode": "RESTRICTED_READ_ONLY_PUBLIC",
@@ -186,6 +211,185 @@ def get_system_telemetry():
             "operational_boundary": "Live actuation is restricted exclusively to authenticated operators inside the sovereign Mattermost room on AMD 1.5."
         }
     }
+
+LAST_PING_TIME = 0.0
+LAST_AI_TIME = 0.0
+COOLDOWN_SECONDS = 3.0
+
+def run_real_switch_ping():
+    global LAST_PING_TIME
+    now = time.time()
+    if now - LAST_PING_TIME < COOLDOWN_SECONDS:
+        rem = round(COOLDOWN_SECONDS - (now - LAST_PING_TIME), 1)
+        return {
+            "ok": False,
+            "step": "PING_AGENT",
+            "error": "RATE_LIMITED",
+            "message": f"Rate limit active. Please wait {rem}s before next diagnostic ping.",
+            "retry_after_s": rem,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    LAST_PING_TIME = now
+
+    env_file = "/home/rlopez/inneros/modules/switch-liveops/compose/.env"
+    user_pw = ""
+    if os.path.isfile(env_file):
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("MATTERMOST_USER_PASSWORD="):
+                    user_pw = line.split("=", 1)[1].strip()
+                    break
+
+    mm_url = "http://127.0.0.1:62327"
+    channel_id = "r4n59sq7dtyp7d3n3ogomaqfwh"  # #inneros-live-operations
+
+    t0 = time.perf_counter()
+    cid = f"CID-LIVE-PING-{uuid.uuid4().hex[:6].upper()}"
+
+    try:
+        login_data = json.dumps({"login_id": "user", "password": user_pw}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{mm_url}/api/v4/users/login",
+            data=login_data,
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=4) as resp:
+            token = resp.headers.get("Token")
+
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        cmd = f"@inneros-incident-triage !ping {cid}"
+
+        post_req = urllib.request.Request(
+            f"{mm_url}/api/v4/posts",
+            data=json.dumps({"channel_id": channel_id, "message": cmd}).encode("utf-8"),
+            headers=headers
+        )
+        with urllib.request.urlopen(post_req, timeout=4) as post_res:
+            post_id = json.loads(post_res.read().decode("utf-8")).get("id")
+
+        reply = None
+        for _ in range(16):
+            time.sleep(0.3)
+            ch_req = urllib.request.Request(f"{mm_url}/api/v4/channels/{channel_id}/posts?per_page=6", headers=headers)
+            try:
+                with urllib.request.urlopen(ch_req, timeout=3) as ch_res:
+                    data = json.loads(ch_res.read().decode("utf-8"))
+                    posts = data.get("posts", {})
+                    for pid, p in posts.items():
+                        if pid != post_id and cid in p.get("message", ""):
+                            reply = p
+                            break
+                if reply:
+                    break
+            except Exception:
+                pass
+
+        elapsed = round((time.perf_counter() - t0) * 1000, 2)
+        reply_msg = reply.get("message", "") if reply else ""
+        passed = bool(reply and "PONG" in reply_msg)
+
+        return {
+            "ok": passed,
+            "step": "PING_AGENT",
+            "correlation_id": cid,
+            "latency_ms": elapsed,
+            "result": "PASS" if passed else "FAIL",
+            "transport": "Mattermost -> Switch Core WS -> InnerOS Agent -> Switch Core HTTP -> Mattermost",
+            "agent_response": reply_msg.strip() if reply_msg else "Agent response timeout after 5s",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        elapsed = round((time.perf_counter() - t0) * 1000, 2)
+        return {
+            "ok": False,
+            "step": "PING_AGENT",
+            "correlation_id": cid,
+            "latency_ms": elapsed,
+            "result": "FAIL",
+            "error": str(e),
+            "transport": "Mattermost -> Switch Core WS -> InnerOS Agent -> Switch Core HTTP -> Mattermost",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+def run_real_qwen_inference(question=None):
+    global LAST_AI_TIME
+    now = time.time()
+    if now - LAST_AI_TIME < COOLDOWN_SECONDS:
+        rem = round(COOLDOWN_SECONDS - (now - LAST_AI_TIME), 1)
+        return {
+            "ok": False,
+            "step": "LOCAL_AI_INFERENCE",
+            "error": "RATE_LIMITED",
+            "message": f"Rate limit active. Please wait {rem}s before next AI diagnostic.",
+            "retry_after_s": rem,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    LAST_AI_TIME = now
+
+    model_name = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+    cid = f"CID-AI-{uuid.uuid4().hex[:6].upper()}"
+
+    if not question or not isinstance(question, str) or len(question.strip()) == 0:
+        question = "Explain how sovereign agent incident triage prevents downtime on local AMD infrastructure."
+    else:
+        question = question.strip()[:180]
+
+    t0 = time.perf_counter()
+    try:
+        data = json.dumps({
+            "model": model_name,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are InnerOS Incident Reasoner running sovereignly on AMD ROCm. Answer technically and concisely in 2 sentences."
+                },
+                {
+                    "role": "user",
+                    "content": question
+                }
+            ],
+            "max_tokens": 100,
+            "temperature": 0.2
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            "http://127.0.0.1:8000/v1/chat/completions",
+            data=data,
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            res = json.loads(resp.read().decode("utf-8"))
+
+        elapsed = round((time.perf_counter() - t0) * 1000, 2)
+        choice = res.get("choices", [{}])[0]
+        content = choice.get("message", {}).get("content", "").strip()
+        usage = res.get("usage", {})
+
+        return {
+            "ok": True,
+            "step": "LOCAL_AI_INFERENCE",
+            "correlation_id": cid,
+            "model_id": model_name,
+            "hardware": "AMD Radeon AI PRO R9700 (ROCm 7.2.1)",
+            "prompt": question,
+            "output": content,
+            "latency_ms": elapsed,
+            "tokens_evaluated": usage.get("total_tokens", 0),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        elapsed = round((time.perf_counter() - t0) * 1000, 2)
+        return {
+            "ok": False,
+            "step": "LOCAL_AI_INFERENCE",
+            "correlation_id": cid,
+            "model_id": model_name,
+            "hardware": "AMD Radeon AI PRO R9700 (ROCm 7.2.1)",
+            "prompt": question,
+            "error": str(e),
+            "latency_ms": elapsed,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
 
 def get_sanitized_evidence():
     ev_path = os.path.join(DATA_DIR, "live_mattermost_evidence.json")
@@ -263,7 +467,7 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
     def do_HEAD(self):
         parsed = urlparse(self.path)
         path = parsed.path
-        if path in ("/", "/index.html", "/api/liveops/status", "/api/liveops/evidence"):
+        if path in ("/", "/index.html", "/api/liveops/status", "/api/liveops/evidence", "/api/liveops/ping", "/api/liveops/test_ai"):
             self.send_response(200)
             self.apply_security_headers()
             self.end_headers()
@@ -328,7 +532,35 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(payload)
             return
 
-        # 4. Operator Endpoints (Protected - require valid authentication)
+        # 4. Public Diagnostic: Ping Agent through Switch
+        elif path == "/api/liveops/ping":
+            data = run_real_switch_ping()
+            payload = json.dumps(data, indent=2).encode("utf-8")
+            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            self.send_response(status_code)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.apply_security_headers(origin)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # 5. Public Diagnostic: Read-only Qwen AI Inference on AMD Radeon PRO R9700
+        elif path == "/api/liveops/test_ai":
+            params = parse_qs(parsed.query)
+            q = params.get("q", [None])[0]
+            data = run_real_qwen_inference(q)
+            payload = json.dumps(data, indent=2).encode("utf-8")
+            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            self.send_response(status_code)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.apply_security_headers(origin)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # 6. Operator Endpoints (Protected - require valid authentication)
         elif path.startswith("/api/operator"):
             auth_header = self.headers.get("Authorization", "")
             expected_token = os.environ.get("LIVEOPS_OPERATOR_TOKEN", "")
@@ -346,7 +578,7 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps({"status": "Authorized operator session active on AMD-1.5"}).encode("utf-8"))
             return
 
-        # 5. Safe Static Files (Explicitly allowlisted extensions only)
+        # 7. Safe Static Files (Explicitly allowlisted extensions only)
         else:
             _, ext = os.path.splitext(path)
             if ext.lower() not in SAFE_STATIC_EXTENSIONS or ".." in path:
@@ -360,6 +592,58 @@ class SecureLiveOpsHandler(http.server.SimpleHTTPRequestHandler):
                 return
 
             return super().do_GET()
+
+    def do_POST(self):
+        origin = self.headers.get("Origin", "")
+        parsed = urlparse(self.path)
+        path = parsed.path
+
+        if path == "/api/liveops/ping":
+            data = run_real_switch_ping()
+            payload = json.dumps(data, indent=2).encode("utf-8")
+            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            self.send_response(status_code)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.apply_security_headers(origin)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        elif path == "/api/liveops/test_ai":
+            q = None
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                if length > 0 and length < 2048:
+                    body = self.rfile.read(length).decode("utf-8")
+                    req_json = json.loads(body)
+                    q = req_json.get("question") or req_json.get("q")
+            except Exception:
+                pass
+            data = run_real_qwen_inference(q)
+            payload = json.dumps(data, indent=2).encode("utf-8")
+            status_code = 429 if data.get("error") == "RATE_LIMITED" else (200 if data.get("ok") else 500)
+            self.send_response(status_code)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.apply_security_headers(origin)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        elif path == "/api/liveops/status":
+            data = get_system_telemetry()
+            payload = json.dumps(data, indent=2).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.apply_security_headers(origin)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # Explicitly deny all other POST methods to prevent unauthorized actuation or state changes
+        self.send_error(501, "Unsupported method ('POST'). Modifying operational state is restricted.")
 
 
 if __name__ == "__main__":

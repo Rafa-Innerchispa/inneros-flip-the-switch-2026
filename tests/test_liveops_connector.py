@@ -14,6 +14,8 @@ class TestLiveOpsConnector(unittest.TestCase):
             agent_name="inneros-incident-triage",
             node_id="TEST-NODE"
         )
+        self.engine.pending_actions.clear()
+        self.engine.incidents.clear()
         self.engine.room_id = "test-room-id"
         self.engine.agent_id = "test-agent-id"
         self.engine.api_key = "test-key"

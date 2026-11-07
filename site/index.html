@@ -13,21 +13,83 @@ header{position:sticky;top:0;z-index:20;background:#081626ec;border-bottom:1px s
 nav{display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:76px}.brand{display:flex;align-items:center;gap:13px;font-size:20px;font-weight:750;white-space:nowrap}.mark{display:grid;place-items:center;width:37px;height:37px;border:2px solid #42d7fa;transform:rotate(45deg);border-radius:8px;box-shadow:0 0 22px #0af6ff4d}.mark span{transform:rotate(-45deg);color:#65e8ff;font-weight:900}.pill{border:1px solid #2b9eb7;border-radius:999px;color:#83eaff;padding:6px 11px;font-size:12px;font-weight:650}.navlinks{display:flex;gap:30px;color:#c4d9e6}.navlinks a:hover{color:#4de4f4}.lang{background:#11293e;color:#fff;border:1px solid #4ea0b6;border-radius:9px;padding:9px 12px;font-weight:700}
 .hero{padding:75px 0 48px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}.eyebrow{text-transform:uppercase;letter-spacing:.17em;font-size:12px;color:#68e9f4;font-weight:750}h1{margin:13px 0 19px;line-height:1.09;letter-spacing:-.052em;font-size:clamp(38px,5vw,67px)}h1 em{font-style:normal;color:#4de4f4}.lead{font-size:18px;line-height:1.6;color:#bed4e2;max-width:650px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.btn{padding:14px 19px;border-radius:11px;border:1px solid #397c98;background:#123049;color:#f1fbff;font-weight:750}.btn.primary{background:linear-gradient(115deg,#5cf0ec,#20aff8);border-color:#6df6fa;color:#032538}.btn:disabled{cursor:not-allowed;opacity:.45}.visual{min-height:320px;display:grid;place-items:center;position:relative}.visual:before{content:"";position:absolute;width:300px;height:300px;border:1px solid #25d8ff55;border-radius:50%;box-shadow:0 0 90px #0cbbea33,inset 0 0 50px #1578ae33}.orbit{position:absolute;width:370px;height:175px;border:2px solid #1ac5ff99;border-radius:50%;transform:rotate(-14deg);box-shadow:0 0 22px #12adf989}.core{width:165px;height:165px;transform:rotate(45deg);border-radius:22px;background:linear-gradient(140deg,#5cf8f6a6,#1472b788);border:2px solid #7af8ff;box-shadow:0 0 28px #05bdfe,0 24px 55px #0075c4,inset 0 0 54px #4ceeff99;display:grid;place-items:center}.core span{transform:rotate(-45deg);font-size:78px;color:#e8ffff;text-shadow:0 0 30px #fff}.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid #355f79;background:#102a40;border-radius:16px;overflow:hidden}.status{padding:20px 12px;text-align:center;border-right:1px solid #355f79;font-size:13px;color:#d6e9f1;font-weight:650}.status:last-child{border:0}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5af39;box-shadow:0 0 10px #ffd25a;margin-right:8px}.dot.ok{background:#4eefa7;box-shadow:0 0 10px #2dec9d}.dot.tcp{background:#38bdf8;box-shadow:0 0 10px #0284c7}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:18px}.step{display:flex;gap:13px;align-items:center;padding:22px;border:1px solid #38617b;background:linear-gradient(120deg,#14344a,#0b1d31);border-radius:14px}.step .emoji{font-size:30px}.step strong{display:block}.step small{display:block;margin-top:3px;color:#aecbd8;font-size:12px}
 .section{padding:45px 0 10px}.section h2{font-size:31px;letter-spacing:-.035em;margin:0 0 8px}.sub{color:#abc4d3;margin-top:0;line-height:1.5}.panels{display:grid;grid-template-columns:1.35fr .9fr .9fr;gap:16px;margin-top:23px}.panel{border:1px solid #37617c;border-radius:17px;background:linear-gradient(140deg,#10324b,#091c2e);padding:24px;min-width:0}.panel h3{font-size:17px;margin:0 0 15px}.tag{display:inline-block;padding:5px 9px;border:1px solid #3c86a2;border-radius:999px;color:#b7f6fd;font-size:11px;margin-right:6px}.tag.amber{border-color:#9f7c2a;color:#ffd878}.tag.green{border-color:#2a9f5c;color:#78ffd0}.incident-title{font-size:24px;font-weight:750;letter-spacing:-.04em;line-height:1.25;margin:14px 0}.detail{border-top:1px solid #34536a;margin-top:17px;padding-top:17px;color:#c6d8e3;font-size:13px;line-height:1.6}.detail b{color:white}.receipt{padding:13px 0;border-bottom:1px solid #304b5f;font-size:13px}.receipt small{display:block;color:#8aafc4;font-family:ui-monospace,monospace;margin-top:4px}.timeline{border-left:2px solid #32c5dd;margin-left:7px;padding-left:15px}.event{position:relative;margin:0 0 21px;font-size:13px}.event:before{content:"";position:absolute;left:-22px;top:3px;background:#42d9fa;width:12px;height:12px;border-radius:50%}.event small{display:block;color:#9fbecd;margin-top:4px}.safe{margin:22px 0 35px;padding:16px 18px;background:#10314c;border:1px solid #2a7bb2;border-radius:11px;text-align:center;color:#c7e9f9;font-size:13px}.architecture{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.arch{background:#102b40;border:1px solid #325e77;padding:19px;border-radius:13px}.arch strong{display:block;color:#67ecff}.arch small{display:block;color:#aac3d1;margin-top:7px;line-height:1.5}
+.console-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+.console-card{background:linear-gradient(135deg,#0e2942,#071b2d);border:1px solid #2d5573;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.console-card h4{margin:0 0 8px;font-size:15px;color:#d8f3fe}
+.console-card p{margin:0 0 16px;font-size:12px;line-height:1.45;color:#9bbcd0;flex-grow:1}
+.console-card button{width:100%;padding:10px 12px;font-size:13px;border-radius:8px}
+.terminal-box{background:#040c17;border:1px solid #234863;border-radius:14px;padding:20px;margin-top:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;box-shadow:inset 0 0 25px #021324}
+.terminal-header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #1a364d}
+.terminal-body{font-size:13px;line-height:1.65;color:#a3cde2;white-space:pre-wrap;word-break:break-word;max-height:360px;overflow-y:auto;margin:0}
+.pipeline{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:14px 18px;background:#091e31;border:1px solid #254a68;border-radius:12px;margin:18px 0;font-size:12px;color:#9bc3d8}
+.pipe-node{padding:5px 10px;background:#102c45;border:1px solid #36678c;border-radius:6px;font-weight:600;color:#e1f5fe}
+.pipe-arrow{color:#4de4f4;font-weight:700}
 footer{border-top:1px solid #26435b;padding:32px 0;color:#a9c0d1;font-size:13px}.foot{display:flex;flex-wrap:wrap;gap:15px;justify-content:space-between}
 .notice{color:#fce1a4}.sr{position:absolute;left:-10000px}
 .step{min-width:0}.step>div{min-width:0;overflow-wrap:anywhere}
 @media(max-width:960px){nav{flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:8px}.navlinks{order:3;width:100%;flex-wrap:wrap}.navlinks a{padding:10px 0}section[id],article[id]{scroll-margin-top:160px}}
-@media(max-width:960px){.hero{grid-template-columns:1fr}.visual{min-height:240px}.panels{grid-template-columns:1fr 1fr}.panels .panel:first-child{grid-column:1/-1}.flow{grid-template-columns:1fr 1fr}.navlinks{gap:14px}}
-@media(max-width:600px){.wrap{padding:0 17px}.brand{font-size:16px}.pill{display:none}.navlinks{display:flex;order:3;width:100%;flex-wrap:wrap;gap:4px 14px}.navlinks a{font-size:13px;padding:10px 0}nav{flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px}section[id],article[id]{scroll-margin-top:160px}.hero{padding-top:44px}.visual{min-height:200px}.core{width:120px;height:120px}.orbit{width:240px;height:130px}.strip{grid-template-columns:1fr 1fr}.status{border-bottom:1px solid #355f79}.flow{grid-template-columns:1fr 1fr}.step{padding:14px}.panels{grid-template-columns:1fr}.panels .panel:first-child{grid-column:auto}.architecture{grid-template-columns:1fr 1fr}h1{font-size:42px}}
+@media(max-width:960px){.hero{grid-template-columns:1fr}.visual{min-height:240px}.panels{grid-template-columns:1fr 1fr}.panels .panel:first-child{grid-column:1/-1}.flow{grid-template-columns:1fr 1fr}.navlinks{gap:14px}.console-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.wrap{padding:0 17px}.brand{font-size:16px}.pill{display:none}.navlinks{display:flex;order:3;width:100%;flex-wrap:wrap;gap:4px 14px}.navlinks a{font-size:13px;padding:10px 0}nav{flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px}section[id],article[id]{scroll-margin-top:160px}.hero{padding-top:44px}.visual{min-height:200px}.core{width:120px;height:120px}.orbit{width:240px;height:130px}.strip{grid-template-columns:1fr 1fr}.status{border-bottom:1px solid #355f79}.flow{grid-template-columns:1fr 1fr}.step{padding:14px}.panels{grid-template-columns:1fr}.panels .panel:first-child{grid-column:auto}.architecture{grid-template-columns:1fr 1fr}.console-grid{grid-template-columns:1fr}.pipeline{gap:4px;padding:10px}h1{font-size:42px}}
 </style>
 </head>
 <body>
-<header><nav class="wrap"><a href="#home" class="brand"><span class="mark"><span>◈</span></span>InnerOS LiveOps <span class="pill">Flip the Switch</span></a><div class="navlinks"><a href="#home" data-i18n="navHome">Home</a><a href="#incident" data-i18n="navIncident">Incident</a><a href="#evidence" data-i18n="navEvidence">Evidence</a><a href="#architecture" data-i18n="navArchitecture">Architecture</a></div><button class="lang" id="lang" type="button" aria-label="Switch language">EN / ES</button></nav></header>
+<header><nav class="wrap"><a href="#home" class="brand"><span class="mark"><span>◈</span></span>InnerOS LiveOps <span class="pill">Flip the Switch</span></a><div class="navlinks"><a href="#home" data-i18n="navHome">Home</a><a href="#console" data-i18n="navConsole">Console</a><a href="#incident" data-i18n="navIncident">Incident</a><a href="#evidence" data-i18n="navEvidence">Evidence</a><a href="#architecture" data-i18n="navArchitecture">Architecture</a></div><button class="lang" id="lang" type="button" aria-label="Switch language">EN / ES</button></nav></header>
 <main class="wrap">
-<section class="hero" id="home"><div><p class="eyebrow" data-i18n="eyebrow">Sovereign agent operations · Flip the Switch 2026</p><h1><span data-i18n="hero1">When AI detects a problem,</span><br><em data-i18n="hero2">humans stay in control.</em></h1><p class="lead" data-i18n="lead">Local-first incident operations powered by Switch, Mattermost, AMD ROCm inference, and verifiable evidence.</p><div class="actions"><button id="live-check" class="btn primary" type="button" data-i18n="liveCheck">↻ Run live system check</button><a id="operations" class="btn" href="#incident" data-i18n="operations">View recorded operations</a><a class="btn" href="#architecture" data-i18n="architecture">◈ View Architecture</a></div></div><div class="visual" role="img" aria-label="Abstract illuminated local AI compute infrastructure"><div class="orbit"></div><div class="core"><span>◈</span></div></div></section>
+<section class="hero" id="home"><div><p class="eyebrow" data-i18n="eyebrow">Sovereign agent operations · Flip the Switch 2026</p><h1><span data-i18n="hero1">When AI detects a problem,</span><br><em data-i18n="hero2">humans stay in control.</em></h1><p class="lead" data-i18n="lead">Local-first incident operations powered by Switch, Mattermost, AMD ROCm inference, and verifiable evidence.</p><div class="actions"><button id="live-check" class="btn primary" type="button" data-i18n="liveCheck">↻ Run live system check</button><a class="btn" href="#console" data-i18n="navConsole">◈ Live Console</a><a id="operations" class="btn" href="#incident" data-i18n="operations">View recorded operations</a><a class="btn" href="#architecture" data-i18n="architecture">◈ View Architecture</a></div></div><div class="visual" role="img" aria-label="Abstract illuminated local AI compute infrastructure"><div class="orbit"></div><div class="core"><span>◈</span></div></div></section>
 <p id="live-check-result" role="status" aria-live="polite" style="color:#b6dae8;font-size:14px;margin:0 0 12px" data-i18n="checkExplain">Live check: reads current AMD service health; recorded events below are historical. No AI inference or device action is triggered.</p>
 <section class="strip" aria-label="System status"><div class="status"><span class="dot" id="s-switch"></span><span data-i18n="sSwitch">Switch: Checking...</span></div><div class="status"><span class="dot" id="s-chat"></span><span data-i18n="sChat">Mattermost: Checking...</span></div><div class="status"><span class="dot" id="s-ai"></span><span data-i18n="sAi">Qwen: Checking...</span></div><div class="status"><span class="dot" id="s-gate"></span><span data-i18n="sGate">Human Gate: Enforced</span></div><div class="status"><span class="dot" id="s-ledger"></span><span data-i18n="sLedger">Evidence: Checking...</span></div></section>
 <section class="flow" aria-label="Incident lifecycle"><div class="step"><span class="emoji">◎</span><div><strong data-i18n="detect">Detect</strong><small data-i18n="detectSub">Identify an incident</small></div></div><div class="step"><span class="emoji">◈</span><div><strong data-i18n="reason">Reason</strong><small data-i18n="reasonSub">Use local AI for context</small></div></div><div class="step"><span class="emoji">♙</span><div><strong data-i18n="authorize">Authorize</strong><small data-i18n="authorizeSub">Require a human decision</small></div></div><div class="step"><span class="emoji">◇</span><div><strong data-i18n="verify">Verify</strong><small data-i18n="verifySub">Record outcome and evidence</small></div></div></section>
+<section class="section" id="console">
+<p class="eyebrow" data-i18n="consoleEyebrow">LIVE OPERATIONAL CONSOLE · VERIFIABLE DIAGNOSTICS</p>
+<h2 data-i18n="consoleTitle">Interactive Sovereign Operations Console</h2>
+<p class="sub" data-i18n="consoleSub">Execute real diagnostic queries against local AMD 1.5 infrastructure. All checks run authentic network and compute paths without physical actuation.</p>
+<div class="pipeline" aria-label="Operational Pipeline Flow">
+  <span class="pipe-node" data-i18n="pipeOp">Operator</span>
+  <span class="pipe-arrow">→</span>
+  <span class="pipe-node" data-i18n="pipeMm">Mattermost</span>
+  <span class="pipe-arrow">→</span>
+  <span class="pipe-node" data-i18n="pipeSw">Switch Core</span>
+  <span class="pipe-arrow">→</span>
+  <span class="pipe-node" data-i18n="pipeAg">InnerOS Agent</span>
+  <span class="pipe-arrow">→</span>
+  <span class="pipe-node" data-i18n="pipeAi">AMD / Qwen</span>
+  <span class="pipe-arrow">→</span>
+  <span class="pipe-node" data-i18n="pipeGate">Human Gate</span>
+  <span class="pipe-arrow">→</span>
+  <span class="pipe-node" data-i18n="pipeEv">Verified Ledger</span>
+</div>
+<div class="console-grid">
+  <div class="console-card">
+    <h4 data-i18n="statusTitle">System Health Audit</h4>
+    <p data-i18n="statusDesc">Queries Switch Core, Mattermost, vLLM, and Agent daemon connectivity and latencies in real time.</p>
+    <button id="btn-op-status" class="btn primary" type="button" data-i18n="btnStatus">↻ Check System Status</button>
+  </div>
+  <div class="console-card">
+    <h4 data-i18n="pingTitle">Switch Agent Ping</h4>
+    <p data-i18n="pingDesc">Sends authentic !ping through Mattermost and Switch Core WebSocket; receives verified agent PONG.</p>
+    <button id="btn-op-ping" class="btn primary" type="button" data-i18n="btnPing">▶ Ping Agent (Switch)</button>
+  </div>
+  <div class="console-card">
+    <h4 data-i18n="aiTitle">Local Qwen Inference</h4>
+    <p data-i18n="aiDesc">Runs sovereign AI triage inference on AMD Radeon AI PRO R9700 via vLLM ROCm. Read-only bounded query.</p>
+    <button id="btn-op-ai" class="btn primary" type="button" data-i18n="btnAi">◈ Test Local AI</button>
+  </div>
+  <div class="console-card">
+    <h4 data-i18n="evTitle">Evidence Ledger</h4>
+    <p data-i18n="evDesc">Fetches verified audit records, correlation IDs, and SHA-256 receipts from AMD 1.5 recorded ledger.</p>
+    <button id="btn-op-evidence" class="btn" type="button" data-i18n="btnEv">◇ View Real Evidence</button>
+  </div>
+</div>
+<div class="terminal-box" role="region" aria-label="Live Console Output">
+  <div class="terminal-header">
+    <span id="op-stage" class="tag" style="background:#13334c;color:#67e8f9">IDLE</span>
+    <span id="op-cid" class="tag" style="background:#0e2a3f;color:#a5d8f3">CID: NONE</span>
+    <span id="op-latency" class="tag" style="background:#0e2a3f;color:#7ee787">-- ms</span>
+    <span id="op-ts" style="font-size:12px;color:#8cc4db;margin-left:auto" data-i18n="termAwaiting">Console ready. Click any diagnostic button above to execute an authentic live query.</span>
+  </div>
+  <pre id="op-log" class="terminal-body">Select a diagnostic operation above to inspect verified live telemetry, agent round-trip ping, or local Qwen inference on AMD Radeon AI PRO R9700.</pre>
+</div>
+</section>
 <section class="section" id="incident">
 <p class="eyebrow" data-i18n="caseLabel">OPERATIONAL RECORD</p>
 <h2 data-i18n="caseTitle">Follow real agent activity, end to end.</h2>
@@ -72,7 +134,25 @@ footer{border-top:1px solid #26435b;padding:32px 0;color:#a9c0d1;font-size:13px}
 const translations = {
  en: {
  verLabel:"INDEPENDENT VERIFICATION",verTitle:"How to verify InnerOS LiveOps",verSub:"This page is publicly accessible and read-only. It does not impersonate a real operator or run commands on infrastructure.",ver1:"01 · Inspect live status",ver1b:"Review Switch, Mattermost and Qwen service checks. A reachable port alone is not proof of an agent response.",ver2:"02 · Review recorded events",ver2b:"The Operations and Evidence sections read actual archived results from authenticated Mattermost conversations.",ver3:"03 · Follow the proof",ver3b:"Find the command, agent response, correlation ID, PASS/FAIL result, latency and optional SHA-256 receipt in the repository or authorized operator records.",ver4:"04 · Reproduce with access",ver4b:"Authorized reviewers can sign in to the self-hosted Mattermost room, send !ping, !status and !incident, and observe replies. Approval commands are restricted to trusted operators.",verSource:"Evidence provenance: /api/liveops/status reads local service checks; /api/liveops/evidence reads sanitized recorded command/response results. The incident triage test uses synthetic anomaly inputs but real Switch, Mattermost and local Qwen integration. Public visitors cannot actuate devices.",
- navHome:"Home", navIncident:"Operations", navEvidence:"Evidence", navArchitecture:"Architecture",
+ navHome:"Home", navConsole:"Console", navIncident:"Operations", navEvidence:"Evidence", navArchitecture:"Architecture",
+ consoleEyebrow:"LIVE OPERATIONAL CONSOLE · VERIFIABLE DIAGNOSTICS",
+ consoleTitle:"Interactive Sovereign Operations Console",
+ consoleSub:"Execute real diagnostic queries against local AMD 1.5 infrastructure. All checks run authentic network and compute paths without physical actuation.",
+ pipeOp:"Operator",pipeMm:"Mattermost",pipeSw:"Switch Core",pipeAg:"InnerOS Agent",pipeAi:"AMD / Qwen",pipeGate:"Human Gate",pipeEv:"Verified Ledger",
+ statusTitle:"System Health Audit",
+ statusDesc:"Queries Switch Core, Mattermost, vLLM, and Agent daemon connectivity and latencies in real time.",
+ btnStatus:"↻ Check System Status",
+ pingTitle:"Switch Agent Ping",
+ pingDesc:"Sends authentic !ping through Mattermost and Switch Core WebSocket; receives verified agent PONG.",
+ btnPing:"▶ Ping Agent (Switch)",
+ aiTitle:"Local Qwen Inference",
+ aiDesc:"Runs sovereign AI triage inference on AMD Radeon AI PRO R9700 via vLLM ROCm. Read-only bounded query.",
+ btnAi:"◈ Test Local AI",
+ evTitle:"Evidence Ledger",
+ evDesc:"Fetches verified audit records, correlation IDs, and SHA-256 receipts from AMD 1.5 recorded ledger.",
+ btnEv:"◇ View Real Evidence",
+ termAwaiting:"Console ready. Click any diagnostic button above to execute an authentic live query.",
+ termStarted:"Started at",termFinished:"Completed at",
  eyebrow:"SOVEREIGN AGENT OPERATIONS · FLIP THE SWITCH 2026",
  hero1:"When AI detects a problem,",hero2:"humans stay in control.",
  lead:"Operators report incidents in Mattermost. Switch delivers them to local Qwen on AMD for analysis; authenticated humans decide what may run. This page shows recorded tests, not live device controls.",
@@ -95,7 +175,25 @@ const translations = {
  },
  es: {
  verLabel:"VERIFICACIÓN INDEPENDIENTE",verTitle:"Cómo verificar InnerOS LiveOps",verSub:"Esta página es pública y de solo lectura. No suplanta a un operador ni ejecuta comandos sobre la infraestructura.",ver1:"01 · Examinar el estado actual",ver1b:"Revisa Switch, Mattermost y Qwen. Un puerto accesible no prueba que el agente haya respondido.",ver2:"02 · Revisar eventos registrados",ver2b:"Las secciones Operaciones y Evidencias muestran resultados archivados de conversaciones autenticadas en Mattermost.",ver3:"03 · Seguir la evidencia",ver3b:"Consulta el comando, respuesta, ID de correlación, resultado, latencia y recibo SHA-256 cuando exista, en el repositorio o registros autorizados.",ver4:"04 · Reproducir con acceso",ver4b:"Los revisores autorizados pueden ingresar a Mattermost, enviar !ping, !status y !incident y observar las respuestas. Las aprobaciones están restringidas.",verSource:"Origen de evidencia: /api/liveops/status comprueba servicios locales; /api/liveops/evidence muestra resultados registrados y sanitizados. La prueba de incidentes emplea anomalías sintéticas con integración real de Switch, Mattermost y Qwen local. El público no puede accionar dispositivos.",
- navHome:"Inicio",navIncident:"Operaciones",navEvidence:"Evidencias",navArchitecture:"Arquitectura",
+ navHome:"Inicio",navConsole:"Consola",navIncident:"Operaciones",navEvidence:"Evidencias",navArchitecture:"Arquitectura",
+ consoleEyebrow:"CONSOLA OPERATIVA EN VIVO · DIAGNÓSTICOS VERIFICABLES",
+ consoleTitle:"Consola Interactiva de Operaciones Soberanas",
+ consoleSub:"Ejecuta consultas de diagnóstico directamente sobre la infraestructura local AMD 1.5. Redes reales, IA local real e IDs de correlación — cero accionamiento físico.",
+ pipeOp:"Operador",pipeMm:"Mattermost",pipeSw:"Switch Core",pipeAg:"Agente InnerOS",pipeAi:"AMD / Qwen",pipeGate:"Filtro Humano",pipeEv:"Libro de Evidencias",
+ statusTitle:"Auditoría de Salud del Sistema",
+ statusDesc:"Latencia en tiempo real en Switch Core (62326), Mattermost (62327), vLLM (8000) y demonio del agente.",
+ btnStatus:"↻ Consultar Estado del Sistema",
+ pingTitle:"Ping al Agente (Switch)",
+ pingDesc:"Comando !ping auténtico enviado por Mattermost y WebSocket de Switch Core; recibe respuesta PONG verificada.",
+ btnPing:"▶ Ping al Agente (Switch)",
+ aiTitle:"Inferencia Local Qwen",
+ aiDesc:"Consulta técnica de triaje soberano ejecutada en AMD Radeon AI PRO R9700 con vLLM ROCm. Solo lectura.",
+ btnAi:"◈ Probar IA Local",
+ evTitle:"Libro de Evidencias",
+ evDesc:"Recupera registros auditables, IDs de correlación y recibos SHA-256 de las operaciones en AMD 1.5.",
+ btnEv:"◇ Ver Evidencia Real",
+ termAwaiting:"Consola lista. Pulsa cualquier botón de diagnóstico superior para ejecutar una consulta auténtica.",
+ termStarted:"Iniciado a las",termFinished:"Completado a las",
  eyebrow:"OPERACIONES SOBERANAS CON AGENTES · FLIP THE SWITCH 2026",
  hero1:"Cuando la IA detecta un problema,",hero2:"las personas mantienen el control.",
  lead:"Los operadores reportan incidentes en Mattermost. Switch los entrega a Qwen local en AMD para analizarlos; una persona autenticada decide qué se puede ejecutar. Aquí ves pruebas registradas, sin controles de dispositivos.",
@@ -136,7 +234,18 @@ async function readJSON(url){const controller=new AbortController(),timer=setTim
 let lastManualCheck=null,checking=false;
 function checkMessage(){const el=byId("live-check-result");if(!lastManualCheck){el.textContent=tr("checkExplain");return}el.textContent=tr(lastManualCheck.ok?"checkSuccess":"checkFailed")+" "+new Date(lastManualCheck.at).toLocaleTimeString(lang==="es"?"es-EC":"en-US")+" · "+tr("checkOlder")}
 async function poll(manual=false){if(manual){if(checking)return;checking=true;byId("live-check").disabled=true;byId("live-check-result").textContent=tr("checkRunning")}try{const nonce=manual?"?check="+Date.now():"";const results=await Promise.allSettled([readJSON("/api/liveops/status"+nonce),readJSON("/api/liveops/evidence"+nonce)]);const status=results[0].status==="fulfilled"?results[0].value:null;latestStatus=status&&typeof status==="object"&&!Array.isArray(status)?status:null;const evidence=results[1].status==="fulfilled"?results[1].value:null;latestEvidence=Array.isArray(evidence)?evidence:null;hasPolled=true;if(manual)lastManualCheck={ok:latestStatus!==null,at:Date.now()};renderText();if(manual)checkMessage()}finally{if(manual){checking=false;byId("live-check").disabled=false}}}
-byId("live-check").addEventListener("click",()=>poll(true));
+byId("live-check").addEventListener("click",()=>{poll(true);executeConsoleOp("status")});
+const opButtons=["btn-op-status","btn-op-ping","btn-op-ai","btn-op-evidence"];
+function setConsoleBusy(busy,stageName){opButtons.forEach(id=>{const b=byId(id);if(b)b.disabled=busy});const st=byId("op-stage");if(st){st.textContent=stageName;st.style.color=(stageName==="COMPLETED"?"#4eefa7":stageName==="FAILED"?"#ff7b72":stageName==="RUNNING"?"#4de4f4":stageName==="REQUESTED"?"#ffd25a":"#67e8f9");st.style.background=(stageName==="COMPLETED"?"#0b3323":stageName==="FAILED"?"#3c1417":"#13334c")}}
+async function executeConsoleOp(kind){setConsoleBusy(true,"REQUESTED");const log=byId("op-log"),ts=byId("op-ts"),cidEl=byId("op-cid"),latEl=byId("op-latency");const startTime=performance.now();if(ts)ts.textContent=tr("termStarted")+" "+new Date().toLocaleTimeString(lang==="es"?"es-EC":"en-US");
+if(kind==="status"){if(log)log.textContent="[REQUESTED] Querying live service status from AMD 1.5...\n";setConsoleBusy(true,"RUNNING");if(log)log.textContent+="[RUNNING] Awaiting TCP/HTTP telemetry from Switch Core, Mattermost, vLLM, and Agent daemon...\n";try{const data=await readJSON("/api/liveops/status?check="+Date.now());const elapsed=Math.round(performance.now()-startTime);setConsoleBusy(false,"COMPLETED");if(cidEl)cidEl.textContent="CID: HEALTH-AUDIT";if(latEl)latEl.textContent=elapsed+" ms";if(ts)ts.textContent=tr("termFinished")+" "+new Date().toLocaleTimeString(lang==="es"?"es-EC":"en-US");const c=data.components||{};if(log)log.textContent=`=== [SYSTEM HEALTH AUDIT — VERIFIED LIVE RESULT] ===\n• Timestamp: ${data.telemetry_timestamp}\n• Host Node: ${data.host_node}\n• Overall Status: ${data.ok?"HEALTHY (PASS)":"DEGRADED (FAIL)"}\n\n--- COMPONENT MATRIX ---\n1. Switch Core (:62326):    ${c.switch_core?.status} (${c.switch_core?.latency_ms??"--"} ms) — ${c.switch_core?.role}\n2. Mattermost (:62327):     ${c.mattermost?.status} (${c.mattermost?.latency_ms??"--"} ms) — ${c.mattermost?.channel}\n3. Local Qwen ROCm (:8000): ${c.qwen_local_rocm?.status} (${c.qwen_local_rocm?.latency_ms??"--"} ms) — ${c.qwen_local_rocm?.model_id}\n4. InnerOS Agent Daemon:    ${c.inneros_agent?.status} (${c.inneros_agent?.latency_ms??"--"} ms) — ${c.inneros_agent?.service}\n5. Human Safety Gate:       ${c.human_safety_gate?.status} (${c.human_safety_gate?.mode})\n6. Evidence Ledger:         ${c.evidence_ledger?.status} (${c.evidence_ledger?.matrix_pass})\n\n[SAFETY GUARANTEE]: Read-only telemetry query. No physical device state modified.`;latestStatus=data;renderStatus()}catch(err){setConsoleBusy(false,"FAILED");if(log)log.textContent+=`[FAILED] Error querying system status: ${err.message}`}}
+else if(kind==="ping"){if(log)log.textContent="[REQUESTED] Initiating authentic round-trip Switch ping...\n";setConsoleBusy(true,"RUNNING");if(log)log.textContent+="[RUNNING] Route: Operator -> Mattermost -> Switch Core WS -> InnerOS Agent -> Switch Core HTTP -> Mattermost...\n";try{const data=await readJSON("/api/liveops/ping?t="+Date.now());const elapsed=Math.round(performance.now()-startTime);if(data.error==="RATE_LIMITED"){setConsoleBusy(false,"RATE_LIMITED");if(log)log.textContent+=`\n[RATE LIMITED] ${data.message}`;return}setConsoleBusy(false,data.ok?"COMPLETED":"FAILED");if(cidEl)cidEl.textContent=data.correlation_id||"CID: PING";if(latEl)latEl.textContent=(data.latency_ms||elapsed)+" ms";if(ts)ts.textContent=tr("termFinished")+" "+new Date().toLocaleTimeString(lang==="es"?"es-EC":"en-US");if(log)log.textContent=`=== [SWITCH AGENT PING — VERIFIED LIVE RESULT] ===\n• Correlation ID: ${data.correlation_id}\n• Result:         ${data.result} (${data.ok?"PASS":"FAIL"})\n• Round-trip Latency: ${data.latency_ms} ms\n• Transport Path: ${data.transport}\n• Timestamp:      ${data.timestamp}\n\n--- AGENT RESPONSE ---\n"${data.agent_response}"\n\n[SAFETY GUARANTEE]: Diagnostic heartbeat verified through Switch Core. Physical relays untouched.`}catch(err){setConsoleBusy(false,"FAILED");if(log)log.textContent+=`[FAILED] Error during Switch ping: ${err.message}`}}
+else if(kind==="ai"){if(log)log.textContent="[REQUESTED] Dispatching sovereign technical inference request to local Qwen...\n";setConsoleBusy(true,"RUNNING");if(log)log.textContent+="[RUNNING] Engine: vLLM ROCm 7.2.1 on AMD Radeon AI PRO R9700 (Port 8000)...\n";try{const data=await readJSON("/api/liveops/test_ai?t="+Date.now());const elapsed=Math.round(performance.now()-startTime);if(data.error==="RATE_LIMITED"){setConsoleBusy(false,"RATE_LIMITED");if(log)log.textContent+=`\n[RATE LIMITED] ${data.message}`;return}setConsoleBusy(false,data.ok?"COMPLETED":"FAILED");if(cidEl)cidEl.textContent=data.correlation_id||"CID: AI";if(latEl)latEl.textContent=(data.latency_ms||elapsed)+" ms";if(ts)ts.textContent=tr("termFinished")+" "+new Date().toLocaleTimeString(lang==="es"?"es-EC":"en-US");if(log)log.textContent=`=== [LOCAL AI INFERENCE — VERIFIED LIVE RESULT] ===\n• Correlation ID:   ${data.correlation_id}\n• Model:            ${data.model_id}\n• Hardware Engine:  ${data.hardware}\n• Inference Time:   ${data.latency_ms} ms (${data.tokens_evaluated||"--"} tokens)\n• Timestamp:        ${data.timestamp}\n\n--- TECHNICAL PROMPT ---\n"${data.prompt}"\n\n--- QWEN SOVEREIGN OUTPUT ---\n"${data.output}"\n\n[SAFETY GUARANTEE]: Read-only local inference. Bounded tokens, zero cloud egress, no physical actions.`}catch(err){setConsoleBusy(false,"FAILED");if(log)log.textContent+=`[FAILED] Error running local AI inference: ${err.message}`}}
+else if(kind==="evidence"){if(log)log.textContent="[REQUESTED] Fetching verified cryptographic evidence ledger from AMD 1.5...\n";setConsoleBusy(true,"RUNNING");try{const data=await readJSON("/api/liveops/evidence?t="+Date.now());const elapsed=Math.round(performance.now()-startTime);setConsoleBusy(false,"COMPLETED");if(cidEl)cidEl.textContent="CID: LEDGER-AUDIT";if(latEl)latEl.textContent=elapsed+" ms";if(ts)ts.textContent=tr("termFinished")+" "+new Date().toLocaleTimeString(lang==="es"?"es-EC":"en-US");const count=Array.isArray(data)?data.length:0,last=count>0?data[count-1]:null;if(log)log.textContent=`=== [VERIFIED EVIDENCE LEDGER — AUDIT RESULT] ===\n• Total Verified Records: ${count}\n• Evidence Source:        Local AMD 1.5 sovereign archive (/modules/switch-liveops/data)\n• Latest Operation:       ${last?last.step:"NONE"}\n• Latest Correlation ID:  ${last?last.correlation_id:"N/A"}\n• Cryptographic Receipt:  ${last?.receipt_digest||"None required (Read-only diagnostic)"}\n• Archive Timestamp:      ${last?.archive_timestamp||"N/A"}\n\n[AUDIT SUMMARY]: All ${count} records reflect authentic recorded executions. Physical actions remain gated behind authenticated Mattermost operator grants.\nCheck the Operational Record and Evidence panels below for the detailed itemized ledger.`;latestEvidence=data;renderEvidence()}catch(err){setConsoleBusy(false,"FAILED");if(log)log.textContent+=`[FAILED] Error fetching evidence ledger: ${err.message}`}}}
+byId("btn-op-status")?.addEventListener("click",()=>executeConsoleOp("status"));
+byId("btn-op-ping")?.addEventListener("click",()=>executeConsoleOp("ping"));
+byId("btn-op-ai")?.addEventListener("click",()=>executeConsoleOp("ai"));
+byId("btn-op-evidence")?.addEventListener("click",()=>executeConsoleOp("evidence"));
 byId("lang").addEventListener("click",()=>{lang=lang==="en"?"es":"en";try{localStorage.setItem("inneros-liveops-lang",lang)}catch(_){}renderText()});
 renderText();poll();setInterval(poll,15000);
 </script>

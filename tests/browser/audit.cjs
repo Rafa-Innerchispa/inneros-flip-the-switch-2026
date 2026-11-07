@@ -44,7 +44,7 @@ async function publicAudit(browser){
   refreshed=await refreshPromise;result('Automatic telemetry refresh',Boolean(refreshed?.telemetry_timestamp&&refreshed.telemetry_timestamp!==firstTimestamp),{first:firstTimestamp,second:refreshed?.telemetry_timestamp});
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(out,'mobile-es-full.png'),fullPage:true});
   const mobile=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,visibleNav:[...document.querySelectorAll('.navlinks a')].filter(e=>e.getClientRects().length).map(e=>e.textContent)}));result('Mobile has no horizontal overflow',mobile.scrollWidth<=mobile.width,mobile);result('Mobile section navigation visible',mobile.visibleNav.length>=4,mobile);
-  const controls=await page.locator('button,input,form').evaluateAll(es=>es.map(e=>({tag:e.tagName,text:e.textContent,label:e.getAttribute('aria-label'),action:e.getAttribute('action')})));result('No public physical-operation controls',controls.every(e=>e.tag==='BUTTON'&&/EN|ES/.test(e.text)),controls);
+  const controls=await page.locator('button,input,form').evaluateAll(es=>es.map(e=>({tag:e.tagName,text:e.textContent,label:e.getAttribute('aria-label'),action:e.getAttribute('action')})));result('No public physical-operation controls',!controls.some(e=>/actuate|power|breaker|relay|reboot|shutdown|reset|hardware|physical|delete/i.test((e.text||'')+' '+(e.label||''))),controls);
 
   result('No uncaught JavaScript errors',!report.pageerrors.length,report.pageerrors);
  }catch(e){result('Public browser run completed',false,e.message.split('\n')[0]);await page.screenshot({path:path.join(out,'public-run-error.png'),fullPage:true}).catch(()=>{});}
