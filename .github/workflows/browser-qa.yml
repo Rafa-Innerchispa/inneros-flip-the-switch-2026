@@ -1,0 +1,41 @@
+name: read-only-public-browser-qa
+on:
+  push:
+    branches: [codex/browser-qa-liveops]
+permissions:
+  contents: read
+jobs:
+  external-chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix tests/browser --no-audit --no-fund
+      - run: tests/browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Preserve baseline unit failures as audit findings
+        continue-on-error: true
+        run: |
+          git show 160e945dfff3cfc4cc4be8e48254161b8d5d727f:site/index.html > "$RUNNER_TEMP/baseline-index.html"
+          node tests/browser/contract.cjs "$RUNNER_TEMP/baseline-index.html" artifacts/browser-unit-baseline
+      - name: Candidate DOM unit tests
+        run: node tests/browser/contract.cjs site/index.html artifacts/browser-unit-candidate
+      - name: External public audit and isolated candidate browser tests
+        continue-on-error: true
+        env:
+          QA_ARTIFACT_DIR: artifacts/browser-qa
+        run: node tests/browser/audit.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: liveops-browser-qa
+          path: artifacts/
+          retention-days: 3
+      - name: Enforce candidate browser regressions separately from live audit
+        if: always()
+        run: |
+          node -e 'const r=require("./artifacts/browser-qa/browser-results.json"); if(r.checks.some(x=>x.name.startsWith("Candidate") && x.status!=="PASS"))process.exit(1);'
