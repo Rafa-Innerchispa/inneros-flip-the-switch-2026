@@ -50,16 +50,16 @@ footer{border-top:1px solid #26435b;padding:32px 0;color:#a9c0d1;font-size:13px}
 </div>
 </section>
 <section class="section" id="verify">
-<p class="eyebrow">INDEPENDENT VERIFICATION</p>
-<h2>How to verify InnerOS LiveOps</h2>
-<p class="sub">This page is publicly accessible and read-only. It does not impersonate a real operator or run commands on infrastructure.</p>
+<p class="eyebrow" data-i18n="verLabel">INDEPENDENT VERIFICATION</p>
+<h2 data-i18n="verTitle">How to verify InnerOS LiveOps</h2>
+<p class="sub" data-i18n="verSub">This page is publicly accessible and read-only. It does not impersonate a real operator or run commands on infrastructure.</p>
 <div class="architecture">
-<div class="arch"><strong>01 · Inspect live status</strong><small>Review Switch, Mattermost and Qwen service checks. A reachable port alone is not proof of an agent response.</small></div>
-<div class="arch"><strong>02 · Review recorded events</strong><small>The Operations and Evidence sections read actual archived results from authenticated Mattermost conversations.</small></div>
-<div class="arch"><strong>03 · Follow the proof</strong><small>Find the command, agent response, correlation ID, PASS/FAIL result, latency and optional SHA-256 receipt in the repository or authorized operator records.</small></div>
-<div class="arch"><strong>04 · Reproduce with access</strong><small>Authorized reviewers can sign in to the self-hosted Mattermost room, send !ping, !status and !incident, and observe replies. Approval commands are restricted to trusted operators.</small></div>
+<div class="arch"><strong data-i18n="ver1">01 · Inspect live status</strong><small data-i18n="ver1b">Review Switch, Mattermost and Qwen service checks. A reachable port alone is not proof of an agent response.</small></div>
+<div class="arch"><strong data-i18n="ver2">02 · Review recorded events</strong><small data-i18n="ver2b">The Operations and Evidence sections read actual archived results from authenticated Mattermost conversations.</small></div>
+<div class="arch"><strong data-i18n="ver3">03 · Follow the proof</strong><small data-i18n="ver3b">Find the command, agent response, correlation ID, PASS/FAIL result, latency and optional SHA-256 receipt in the repository or authorized operator records.</small></div>
+<div class="arch"><strong data-i18n="ver4">04 · Reproduce with access</strong><small data-i18n="ver4b">Authorized reviewers can sign in to the self-hosted Mattermost room, send !ping, !status and !incident, and observe replies. Approval commands are restricted to trusted operators.</small></div>
 </div>
-<p class="sub" style="margin-top:16px">Evidence provenance: <code>/api/liveops/status</code> reads local service checks; <code>/api/liveops/evidence</code> reads sanitized recorded command/response results. The incident triage test uses synthetic anomaly inputs but real Switch, Mattermost and local Qwen integration. Public visitors cannot actuate devices.</p>
+<p class="sub" style="margin-top:16px" data-i18n="verSource">Evidence provenance: /api/liveops/status reads local service checks; /api/liveops/evidence reads sanitized recorded command/response results. The incident triage test uses synthetic anomaly inputs but real Switch, Mattermost and local Qwen integration. Public visitors cannot actuate devices.</p>
 </section>
 <section class="section" id="architecture"><p class="eyebrow" data-i18n="archLabel">HOW IT WORKS</p><h2 data-i18n="archTitle">Private intelligence. Shared decisions.</h2><p class="sub" data-i18n="archSub">Switch coordinates human-agent conversation. InnerOS provides local reasoning and policy boundaries.</p><div class="architecture"><div class="arch"><strong>Switch Core</strong><small data-i18n="arch1">Agent communication, room context, event transport.</small></div><div class="arch"><strong>Mattermost</strong><small data-i18n="arch2">Collaborative channel for operators and agents.</small></div><div class="arch"><strong>AMD ROCm + Qwen</strong><small data-i18n="arch3">Local model inference on sovereign hardware.</small></div><div class="arch"><strong>InnerOS</strong><small data-i18n="arch4">Policy, approval gates, audit and verification.</small></div></div></section>
 <div class="safe" data-i18n="safe">◈ Live service telemetry and recorded agent evidence. Device actions require authenticated authorization within Mattermost and are not exposed publicly.</div>
@@ -68,6 +68,7 @@ footer{border-top:1px solid #26435b;padding:32px 0;color:#a9c0d1;font-size:13px}
 "use strict";
 const translations = {
  en: {
+ verLabel:"INDEPENDENT VERIFICATION",verTitle:"How to verify InnerOS LiveOps",verSub:"This page is publicly accessible and read-only. It does not impersonate a real operator or run commands on infrastructure.",ver1:"01 · Inspect live status",ver1b:"Review Switch, Mattermost and Qwen service checks. A reachable port alone is not proof of an agent response.",ver2:"02 · Review recorded events",ver2b:"The Operations and Evidence sections read actual archived results from authenticated Mattermost conversations.",ver3:"03 · Follow the proof",ver3b:"Find the command, agent response, correlation ID, PASS/FAIL result, latency and optional SHA-256 receipt in the repository or authorized operator records.",ver4:"04 · Reproduce with access",ver4b:"Authorized reviewers can sign in to the self-hosted Mattermost room, send !ping, !status and !incident, and observe replies. Approval commands are restricted to trusted operators.",verSource:"Evidence provenance: /api/liveops/status reads local service checks; /api/liveops/evidence reads sanitized recorded command/response results. The incident triage test uses synthetic anomaly inputs but real Switch, Mattermost and local Qwen integration. Public visitors cannot actuate devices.",
  navHome:"Home", navIncident:"Operations", navEvidence:"Evidence", navArchitecture:"Architecture",
  eyebrow:"SOVEREIGN AGENT OPERATIONS · FLIP THE SWITCH 2026",
  hero1:"When AI detects a problem,",hero2:"humans stay in control.",
@@ -90,6 +91,7 @@ const translations = {
  healthy:"Healthy",reachable:"Port reachable",offline:"Unavailable",statusRecorded:"Recorded",policyConfigured:"Policy configured"
  },
  es: {
+ verLabel:"VERIFICACIÓN INDEPENDIENTE",verTitle:"Cómo verificar InnerOS LiveOps",verSub:"Esta página es pública y de solo lectura. No suplanta a un operador ni ejecuta comandos sobre la infraestructura.",ver1:"01 · Examinar el estado actual",ver1b:"Revisa Switch, Mattermost y Qwen. Un puerto accesible no prueba que el agente haya respondido.",ver2:"02 · Revisar eventos registrados",ver2b:"Las secciones Operaciones y Evidencias muestran resultados archivados de conversaciones autenticadas en Mattermost.",ver3:"03 · Seguir la evidencia",ver3b:"Consulta el comando, respuesta, ID de correlación, resultado, latencia y recibo SHA-256 cuando exista, en el repositorio o registros autorizados.",ver4:"04 · Reproducir con acceso",ver4b:"Los revisores autorizados pueden ingresar a Mattermost, enviar !ping, !status y !incident y observar las respuestas. Las aprobaciones están restringidas.",verSource:"Origen de evidencia: /api/liveops/status comprueba servicios locales; /api/liveops/evidence muestra resultados registrados y sanitizados. La prueba de incidentes emplea anomalías sintéticas con integración real de Switch, Mattermost y Qwen local. El público no puede accionar dispositivos.",
  navHome:"Inicio",navIncident:"Operaciones",navEvidence:"Evidencias",navArchitecture:"Arquitectura",
  eyebrow:"OPERACIONES SOBERANAS CON AGENTES · FLIP THE SWITCH 2026",
  hero1:"Cuando la IA detecta un problema,",hero2:"las personas mantienen el control.",
