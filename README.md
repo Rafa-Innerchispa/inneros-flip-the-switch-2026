@@ -22,7 +22,7 @@ flowchart TD
   Act --> Verify[State Readback & SHA-256 Evidence Digest]
   Deny --> Switch
   Verify --> Switch
-  Bridge -.-> Console[InnerOS Meta Guardian Web Console :8788]
+  Bridge -.-> Console[Standalone LiveOps Judges Console :8790]
 ```
 
 **Switch is essential:** there is no collaboration or authorization without an addressed, authenticated Switch room event. A standalone test fixture is not claimed as a contest submission. The independent Python agent does **not** require Codex, Antigravity or a paid LLM to perform the live workflow.
@@ -53,7 +53,7 @@ The deployment runs primary on **AMD 1.5** (`192.168.1.5`, Ubuntu 26.04 LTS, AMD
 - **Switch Gateway Dashboard:** `http://127.0.0.1:62325` (AMD) / `http://127.0.0.1:62225` (Windows)
 - **Mattermost Chat:** `http://127.0.0.1:62327` (AMD) / `http://127.0.0.1:62227` (Windows)
 - **Local LLM Endpoint:** `http://127.0.0.1:8000/v1` (QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ via vLLM)
-- **Meta Project Decoupling:** Meta Global Hackathon 2026 remains completely isolated and restored at `https://guardian.pcdoctor.ai/` (:8788).
+- **Standalone delivery:** Public judges console and self-hosted operations are served independently at `https://liveops.pcdoctor.ai/` (:8790).
 
 ## Production Sovereign Node (AMD 1.5) & Fallback Node (Windows)
 
