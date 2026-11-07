@@ -35,7 +35,7 @@ Bridging Switch Rooms to physical infrastructure with:
 - 8/8 automated E2E tests passing in 9.6s
 
 Check out the live demo & repo:
-🔗 Demo: https://inneros-act3.creatorcore.ai/
+🔗 Demo: https://liveops.pcdoctor.ai/
 🔗 Repo: https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026
 
 #HowISwitch

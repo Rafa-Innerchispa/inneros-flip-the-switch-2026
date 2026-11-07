@@ -3,7 +3,7 @@
 **Target Duration:** 2 minutes 45 seconds (Under the 3-minute hard limit).  
 **Recording Setup:**  
 - Left screen / Window 1: Mattermost channel `#inneros-live-operations`.  
-- Right screen / Window 2: Guardian Web Console (`https://guardian.pcdoctor.ai/#liveops`).  
+- Right screen / Window 2: Standalone LiveOps Judges Console (`https://liveops.pcdoctor.ai/`).  
 - Terminal / Optional overlay: AMD 1.5 system monitor showing ROCm GPU utilization during inference.  
 - Clear audio narration in English.
 
@@ -11,7 +11,7 @@
 
 ## 00:00 – 00:25 | Hook & The Physical Dilemma
 
-**Visual:** Camera on narrator or screen showing Mattermost `#inneros-live-operations` alongside the Guardian Console.
+**Visual:** Camera on narrator or screen showing Mattermost `#inneros-live-operations` alongside the Standalone LiveOps Console.
 
 **Spoken Narration (English):**
 > "Most AI agents today operate behind a glass wall—writing code or answering chat questions. But in mission-critical facilities, smart edge nodes, and automated buildings, the real challenge is physical operations: who authorized an actuation, and how do you guarantee an AI model didn't hallucinate an uncontrolled action?  
@@ -59,24 +59,24 @@ Show the agent immediately rejecting: `[INNEROS BLOCKED] No pending approval fou
 
 ---
 
-## 01:55 – 02:25 | Valid Human Approval & Tamper-Evident SHA-256 Receipt
+## 01:55 – 02:25 | Valid Human Approval & Tamper-Evident SHA-256 Digest
 
-**Visual:** In Mattermost (or by clicking the green Authorize button in the Guardian Web Console), issue the valid approval:  
+**Visual:** In Mattermost, issue the valid approval:  
 `@inneros-incident-triage !approve ACT-XXXXXX`  
 Show the execution confirmation, closed incident, and SHA-256 receipt.
 
 **Spoken Narration (English):**
 > "Now, the authenticated operator provides explicit authorization for the proposed action.  
-> The agent executes the safe diagnostic cycle, verifies readback, and generates an immutable SHA-256 evidence receipt linking the incident ID, operator identity, timestamp, and target state. The incident is verified and closed."
+> The agent executes the safe diagnostic cycle, verifies readback, and generates a tamper-evident SHA-256 cryptographic digest linking the incident ID, operator identity, timestamp, and target state. The incident is verified and closed."
 
 ---
 
-## 02:25 – 02:45 | Public Guardian Console & Multi-Track Value
+## 02:25 – 02:45 | Standalone Judges Console & Multi-Track Value
 
-**Visual:** Switch browser tab to `https://guardian.pcdoctor.ai/#liveops`. Show the live incidents list updated to `RESOLVED & VERIFIED`, the cryptographic receipts table, and the 8/8 PASS E2E test matrix.
+**Visual:** Switch browser tab to `https://liveops.pcdoctor.ai/`. Show the live status chips, the simulated playground walkthrough, the recorded live receipts table, and the 8/8 PASS E2E test matrix.
 
 **Spoken Narration (English):**
-> "Everything is mirrored in real time on our public Guardian Console at `guardian.pcdoctor.ai`, deployed via Cloudflare Tunnel.  
+> "Everything is mirrored in real time on our standalone public LiveOps Console at `liveops.pcdoctor.ai`, deployed via Cloudflare Tunnel.  
 > For enterprise facility management—our **Best Business Workflow**—this replaces fragmented monitoring dashboards with a single auditable room.  
 > For home lab resilience—our **Best Personal Workflow**—it gives homeowners safe remote oversight of smart breakers without cloud lock-in."
 
@@ -95,5 +95,5 @@ Show the execution confirmation, closed incident, and SHA-256 receipt.
 
 - [ ] Video duration strictly between 2:15 and 2:55.
 - [ ] Mattermost `#inneros-live-operations` clearly visible.
-- [ ] Public Guardian Console `https://guardian.pcdoctor.ai/#liveops` shown in browser with HTTPS lock icon.
+- [ ] Standalone LiveOps Console `https://liveops.pcdoctor.ai/` shown in browser with HTTPS lock icon.
 - [ ] Uploaded to YouTube as **Unlisted** (or Loom) with link copied into the submission form.

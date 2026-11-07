@@ -47,7 +47,7 @@ flowchart TD
 
 The deployment runs primary on **AMD 1.5** (`192.168.1.5`, Ubuntu 26.04 LTS, AMD Radeon AI PRO R9700 with 32 GB VRAM) with **Windows** maintained as a functional backup.
 
-- **Public Live Demo Console:** [https://inneros-act3.creatorcore.ai/](https://inneros-act3.creatorcore.ai/) (HTTPS via Cloudflare Tunnel; alternative: `https://liveops.pcdoctor.ai/`)
+- **Public Live Demo Console:** [https://liveops.pcdoctor.ai/](https://liveops.pcdoctor.ai/) (HTTPS via Cloudflare Tunnel)
 - **Local LAN Demo Console:** `http://192.168.1.5:8790`
 - **Switch Core API:** `http://127.0.0.1:62326` (AMD) / `http://127.0.0.1:62226` (Windows)
 - **Switch Gateway Dashboard:** `http://127.0.0.1:62325` (AMD) / `http://127.0.0.1:62225` (Windows)

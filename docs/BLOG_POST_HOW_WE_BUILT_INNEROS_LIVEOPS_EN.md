@@ -158,7 +158,7 @@ Working deeply with Switch 0.40.1 has been an inspiring glimpse into the future 
 InnerOS LiveOps proves that AI agents don't have to choose between autonomy and safety. By combining Switch's collaborative room architecture with local sovereign ROCm inference and deterministic human governance, we can confidently put AI agents in charge of real-world infrastructure.
 
 * **GitHub Repository:** [https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026](https://github.com/Rafa-Innerchispa/inneros-flip-the-switch-2026)
-* **Public Demonstration Console:** [https://inneros-act3.creatorcore.ai/](https://inneros-act3.creatorcore.ai/) (Alternative: [https://liveops.pcdoctor.ai/](https://liveops.pcdoctor.ai/))
+* **Public Demonstration Console:** [https://liveops.pcdoctor.ai/](https://liveops.pcdoctor.ai/)
 * **Verified Test Suite:** 8 / 8 PASS in under 10 seconds.
 * **External Spend:** $0.00 (100% Local-First Open Source).
 
