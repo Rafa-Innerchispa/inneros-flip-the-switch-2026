@@ -1,0 +1,11 @@
+{
+  "name": "inneros-liveops-browser-qa-harness",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Read-only public browser QA; no production operations or evidence writes",
+  "dependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "linkedom": "0.18.12",
+    "playwright": "1.65.0"
+  }
+}
