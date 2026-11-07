@@ -43,7 +43,10 @@ class StandaloneExportTests(unittest.TestCase):
                 dst = source / rel
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 dst.write_text("synthetic", encoding="utf-8")
-            (source / "shortcut").symlink_to(source / "README.md")
+            try:
+                (source / "shortcut").symlink_to(source / "README.md")
+            except OSError:
+                self.skipTest("Symlink creation requires elevated privileges on Windows")
             with self.assertRaises(ValueError):
                 module.build_manifest(source)
 
