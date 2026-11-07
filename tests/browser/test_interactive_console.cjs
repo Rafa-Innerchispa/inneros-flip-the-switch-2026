@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 const targetUrl = process.env.TEST_URL || 'http://192.168.1.5:8790/';
-const operatorToken = process.env.LIVEOPS_OPERATOR_TOKEN || 'inneros-liveops-operator-2026-auth';
+const operatorToken = process.env.LIVEOPS_OPERATOR_TOKEN;
+if (!operatorToken) throw new Error('Authenticated QA requires an existing private LIVEOPS_OPERATOR_TOKEN; no built-in credential is available.');
 const evidenceDir = path.resolve('docs/evidence');
 const artifactDir = path.resolve('C:/Users/hrlg/.gemini/antigravity/brain/56250828-9f3d-47ae-94bc-16cdb57b9c91');
 
@@ -87,9 +88,12 @@ async function run() {
 
     // 6. Authenticate Operator Session
     console.log('[6/10] Authenticating Operator Session...');
-    await page.evaluate((tok) => {
-      sessionStorage.setItem('inneros_operator_token', tok);
-    }, operatorToken);
+    // Keep the existing credential in the test runner, never in page storage or URLs.
+    const approvedOrigin = new URL(targetUrl).origin;
+    await context.route('**/api/liveops/test_ai', route => {
+      if (new URL(route.request().url()).origin !== approvedOrigin) return route.abort();
+      return route.continue({ headers: { ...route.request().headers(), Authorization: `Bearer ${operatorToken}` } });
+    });
 
     // 7. Ping Agent Authenticated Call #2 (Must Have Different Unique CID)
     console.log('[7/10] Testing "Ping Agent (Switch)" Authenticated Call #2...');
