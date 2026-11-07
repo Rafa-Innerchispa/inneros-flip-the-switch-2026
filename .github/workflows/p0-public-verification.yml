@@ -1,0 +1,25 @@
+name: p0-external-production-verification
+on:
+  push:
+    branches: [codex/p0-external-verification]
+permissions:
+  contents: read
+jobs:
+  public-chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix tests/browser --no-audit --no-fund
+      - run: tests/browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture real production results; no operator secret or rotation
+        run: node tests/browser/p0-public.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p0-public-production-proof
+          path: artifacts/p0-public/
+          retention-days: 3
